@@ -1,3 +1,13 @@
+cub3d
+val_log
+*.txt
+.vscode
+# Ignore Obj folder
+obj/
+
+# Ignore Ctrl + Z file
+.nfs*
+
 # Prerequisites
 *.d
 
