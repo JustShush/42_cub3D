@@ -59,6 +59,9 @@ $(MLX_DIR)$(MLX):
 run: all
 	@./$(NAME)
 
+rg: all
+	@valgrind ./$(NAME)
+
 clean:
 	@/bin/rm -rf $(OBJ_DIR)
 	@make -s -C $(LIBFT_DIR) clean
