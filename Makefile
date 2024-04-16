@@ -13,15 +13,16 @@ INCLUDES = -I $(includefolder) -I $(LIBFT_DIR) -I $(MLX_DIR)
 SRC_FOLDER = src/
 OBJ_DIR = obj/
 
-SRC_ROOT_FILES = main.c
+SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c
+RENDER_FILES = draw.c sprite.c
 
-INCLUDE_HEADERS = $(addprefix $(includefolder), cub3d.h)
+INCLUDE_HEADERS = $(addprefix $(includefolder), \
+	cub3d.h win.h img.h vecs.h \
+)
 
 FILES = \
-	$(SRC_ROOT_FILES)
-#$(addprefix b-ins/, $(B-INS_FILES)) \
-#$(addprefix ex/, $(EX_FILES)) \
-#$(addprefix pl/, $(PARSER_LEXER_FILES))
+	$(SRC_ROOT_FILES) \
+	$(addprefix render/, $(RENDER_FILES))
 
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:%.c=%.o))
 
@@ -58,6 +59,9 @@ $(MLX_DIR)$(MLX):
 
 run: all
 	@./$(NAME)
+
+rg: all
+	@valgrind ./$(NAME)
 
 clean:
 	@/bin/rm -rf $(OBJ_DIR)
