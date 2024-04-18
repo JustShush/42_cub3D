@@ -1,6 +1,6 @@
 NAME = cub3d
 CC = cc
-CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g# -fsanitize=address -static-libsan
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g# -fsanitize=address -static-libasan
 
 includefolder = includes/
 LIBFT_DIR = libft/

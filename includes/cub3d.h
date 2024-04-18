@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/16 16:45:05 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:05:00 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdio.h>
 
 # include <mlx.h>
+# include <libft.h>
 
 # include <vecs.h>
 # include <img.h>
@@ -29,10 +30,21 @@
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 640
 
-# define PI 3.14159265358979323846
+# define PI 3.14159265358979323846f
 # define ROTATION_SPEED 0.11
-# define FOV 1.04719755119659774615
-# define RAY_INCREMENT 0.02
+# define FOV PI / 1.8
+# define RAY_NUM WIN_WIDTH
+# define RAY_INCREMENT FOV / RAY_NUM
+
+# define SKY_COLOR 0x0000FF
+# define GROUND_COLOR 0x964B00
+
+//# define PROFILER
+# ifdef PROFILER
+#  include <time.h>
+# endif
+
+# define PROJECTION_PLANE_DISTANCE (WIN_WIDTH) / tan(FOV / 2)
 
 enum	e_player_direction
 {
@@ -48,17 +60,26 @@ typedef struct t_player
 	double	angle;
 }	t_player;
 
+typedef struct t_imgbuffer
+{
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}	t_imgbuffer;
+
 typedef struct t_windata
 {
 	void		*mlx;
 	void		*mlx_win;
+	t_imgbuffer	win_buffer;
 	t_sprites	sprites;
 	t_player	player;
 }	t_windata;
 
 void	drawMap(t_windata *windata, t_sprites *sprites);
-void	drawGrid(t_windata *windata);
-void	drawRays(t_windata *windata);
+void	drawScreen(t_windata *windata);
 
 void	init_event_handlers(t_windata *windata);
 void	close_win(t_windata *windata);
@@ -67,16 +88,18 @@ void	close_win(t_windata *windata);
 // 	 \	draw.c
 void	line(t_windata *windata, int color, t_v2 start, t_v2 end);
 void	pixel(t_windata *windata, int color, t_v2 pos);
+void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos, bool only_if_0);
 void    square(t_windata *windata, int color, t_v2 center, int side_length, float angle);
 void	rect(t_windata *windata, int color, t_v2 start, t_v2 end);
 void	clear_window(t_windata *windata);
+void	clear_buffer(t_imgbuffer *buffer);
 
 //  Player
-void	move_player(t_player *player, enum e_player_direction dir);
-void	rotate_player(t_player *player, enum e_player_direction dir);
+bool	move_player(t_player *player, enum e_player_direction dir);
+bool	rotate_player(t_player *player, enum e_player_direction dir);
 
 //  Raycasting
-t_v2f	raycast(t_windata *windata, int map[][10], double angle);
+t_v3f	raycast(t_windata *windata, int map[][10], double angle);
 
 
 #endif
