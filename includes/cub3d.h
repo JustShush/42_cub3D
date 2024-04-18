@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/18 17:05:00 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:09:34 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ typedef struct t_windata
 	t_player	player;
 }	t_windata;
 
-void	drawMap(t_windata *windata, t_sprites *sprites);
+void	drawMapToScreen(t_windata *windata, t_sprites *sprites);
 void	drawScreen(t_windata *windata);
 
 void	init_event_handlers(t_windata *windata);

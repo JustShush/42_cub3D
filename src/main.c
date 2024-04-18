@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/18 17:06:00 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:10:07 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,14 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Failed to get image address\n");
 		exit(EXIT_FAILURE);
 	}
-	drawMap(&data, &data.sprites);
+	drawMapToScreen(&data, &data.sprites);
 	mlx_loop(data.mlx);
 	free(data.mlx);
 	free(data.mlx_win);
 	return (0);
 }
 
-void	drawMap(t_windata *windata, t_sprites *sprites)
+void	drawMapToScreen(t_windata *windata, t_sprites *sprites)
 {
 	int		i;
 	int		j;

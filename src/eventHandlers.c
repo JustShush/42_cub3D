@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/17 17:20:39 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:09:34 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	key_press(int keycode, t_windata *windata)
 	if (keycode == K_ESC)
 		close_win(windata);
 	if (moved)
-		drawMap(windata, &windata->sprites);
+		drawMapToScreen(windata, &windata->sprites);
 	return (0);
 }
 
