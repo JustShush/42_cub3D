@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/15 18:58:28 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:20:39 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,22 @@ static int	handle_close(t_windata *windata)
 static int	key_press(int keycode, t_windata *windata)
 {
 	(void)windata;
+	bool	moved;
+
+	moved = false;
 	//printf("keycode: %d\n", keycode);
 	if (keycode == K_W || keycode == K_UP)
-		move_player(&windata->player, UP);
+		moved = move_player(&windata->player, UP);
 	else if (keycode == K_A || keycode == K_LEFT)
-		rotate_player(&windata->player, LEFT);
+		moved = rotate_player(&windata->player, LEFT);
 	else if (keycode == K_S || keycode == K_DOWN)
-		move_player(&windata->player, DOWN);
+		moved = move_player(&windata->player, DOWN);
 	else if (keycode == K_D || keycode == K_RIGHT)
-		rotate_player(&windata->player, RIGHT);
+		moved = rotate_player(&windata->player, RIGHT);
 	if (keycode == K_ESC)
 		close_win(windata);
-	drawMap(windata, &windata->sprites);
+	if (moved)
+		drawMap(windata, &windata->sprites);
 	return (0);
 }
 

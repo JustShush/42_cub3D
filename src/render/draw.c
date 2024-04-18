@@ -6,11 +6,13 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/15 18:50:00 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:47:01 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+#include <string.h>
+#include <stdint.h>
 
 void	line(t_windata *windata, int color, t_v2 start, t_v2 end)
 {
@@ -28,7 +30,7 @@ void	line(t_windata *windata, int color, t_v2 start, t_v2 end)
 	err = (dx > dy ? dx : -dy) / 2;
 	while (1)
 	{
-		mlx_pixel_put(windata->mlx, windata->mlx_win, start.x, start.y, color);
+		pixel(windata, color, start);
 		if (start.x == end.x && start.y == end.y)
 			break ;
 		e2 = err;
@@ -50,27 +52,39 @@ void	pixel(t_windata *windata, int color, t_v2 pos)
 	mlx_pixel_put(windata->mlx, windata->mlx_win, pos.x, pos.y, color);
 }
 
-void    square(t_windata *windata, int color, t_v2 center, int side_length, float angle)
+void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos, bool only_if_0)
 {
-    t_v2 vertices[4];
-    int half_side = side_length / 2;
+	char	*dst;
 
-    // Calculate the original square vertices centered at origin
-    vertices[0] = (t_v2){center.x - half_side, center.y - half_side};
-    vertices[1] = (t_v2){center.x + half_side, center.y - half_side};
-    vertices[2] = (t_v2){center.x + half_side, center.y + half_side};
-    vertices[3] = (t_v2){center.x - half_side, center.y + half_side};
+	dst = windata->win_buffer.addr + (pos.y * windata->win_buffer.line_length
+			+ pos.x * (windata->win_buffer.bits_per_pixel / 8));
+	if (only_if_0 && *(unsigned int *)dst != 0)
+		return ;
+	*(unsigned int *)dst = color;
+}
 
-    // Rotate each vertex
-    for (int i = 0; i < 4; i++) {
-        vertices[i] = rotate_point(vertices[i], center, angle);
-    }
+void	square(t_windata *windata, int color, t_v2 center, int side_length,
+		float angle)
+{
+	t_v2	vertices[4];
+	int		half_side;
 
-    // Draw lines between the rotated vertices to form the square
-    line(windata, color, vertices[0], vertices[1]);
-    line(windata, color, vertices[1], vertices[2]);
-    line(windata, color, vertices[2], vertices[3]);
-    line(windata, color, vertices[3], vertices[0]);
+	half_side = side_length / 2;
+	// Calculate the original square vertices centered at origin
+	vertices[0] = (t_v2){center.x - half_side, center.y - half_side};
+	vertices[1] = (t_v2){center.x + half_side, center.y - half_side};
+	vertices[2] = (t_v2){center.x + half_side, center.y + half_side};
+	vertices[3] = (t_v2){center.x - half_side, center.y + half_side};
+	// Rotate each vertex
+	for (int i = 0; i < 4; i++)
+	{
+		vertices[i] = rotate_point(vertices[i], center, angle);
+	}
+	// Draw lines between the rotated vertices to form the square
+	line(windata, color, vertices[0], vertices[1]);
+	line(windata, color, vertices[1], vertices[2]);
+	line(windata, color, vertices[2], vertices[3]);
+	line(windata, color, vertices[3], vertices[0]);
 }
 
 void	rect(t_windata *windata, int color, t_v2 start, t_v2 end)
@@ -81,7 +95,13 @@ void	rect(t_windata *windata, int color, t_v2 start, t_v2 end)
 	line(windata, color, end, (t_v2){start.x, end.y});
 }
 
+// Cleans the buffer window
 void	clear_window(t_windata *windata)
 {
 	mlx_clear_window(windata->mlx, windata->mlx_win);
+}
+
+void	clear_buffer(t_imgbuffer *buffer)
+{
+	ft_memset(buffer->addr, 0, buffer->line_length * WIN_HEIGHT);
 }
