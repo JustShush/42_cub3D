@@ -1,43 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   win.h                                              :+:      :+:    :+:   */
+/*   settings.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/15 15:50:07 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:15:52 by tiagoliv         ###   ########.fr       */
+/*   Created: 2024/04/19 01:11:37 by tiagoliv          #+#    #+#             */
+/*   Updated: 2024/04/19 01:12:40 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WIN_H
-# define WIN_H
+#include <cub3d.h>
 
-enum					e_hooking_event
+void	update_settings(t_windata	*windata)
 {
-	KeyPress = 2,
-	DestroyNotify = 17,
-};
-
-enum					e_event_mask
-{
-	NoEventMask = 0L,
-	KeyPressMask = (1L << 0)
-};
-
-enum					e_key_code
-{
-	K_W = 119,
-	K_A = 97,
-	K_S = 115,
-	K_D = 100,
-	K_PLUS = 43,
-	K_MINUS = 45,
-	K_UP = 65362,
-	K_LEFT = 65361,
-	K_DOWN = 65364,
-	K_RIGHT = 65363,
-	K_ESC = 65307,
-};
-
-#endif
+	windata->settings.projection_plane_distance
+		= (WIN_WIDTH / 2) / tan(windata->player.fov / 2);
+	windata->settings.ray_increment = windata->player.fov / WIN_WIDTH;
+}

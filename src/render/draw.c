@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/17 17:47:01 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 00:38:29 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <string.h>
 #include <stdint.h>
 
-void	line(t_windata *windata, int color, t_v2 start, t_v2 end)
+void	line(t_windata *windata, int color, t_v2 start, t_v2 end, bool buffer)
 {
 	int		dx;
 	int		dy;
@@ -30,7 +30,10 @@ void	line(t_windata *windata, int color, t_v2 start, t_v2 end)
 	err = (dx > dy ? dx : -dy) / 2;
 	while (1)
 	{
-		pixel(windata, color, start);
+		if (buffer)
+			pixel_to_buffer(windata, color, start, false);
+		else
+			pixel(windata, color, start);
 		if (start.x == end.x && start.y == end.y)
 			break ;
 		e2 = err;
@@ -81,18 +84,22 @@ void	square(t_windata *windata, int color, t_v2 center, int side_length,
 		vertices[i] = rotate_point(vertices[i], center, angle);
 	}
 	// Draw lines between the rotated vertices to form the square
-	line(windata, color, vertices[0], vertices[1]);
-	line(windata, color, vertices[1], vertices[2]);
-	line(windata, color, vertices[2], vertices[3]);
-	line(windata, color, vertices[3], vertices[0]);
+	line(windata, color, vertices[0], vertices[1], true);
+	line(windata, color, vertices[1], vertices[2], true);
+	line(windata, color, vertices[2], vertices[3], true);
+	line(windata, color, vertices[3], vertices[0], true);
 }
 
-void	rect(t_windata *windata, int color, t_v2 start, t_v2 end)
+void	rect(t_windata *windata, int color, t_v2 start, int size)
 {
-	line(windata, color, start, (t_v2){end.x, start.y});
-	line(windata, color, start, (t_v2){start.x, end.y});
-	line(windata, color, end, (t_v2){end.x, start.y});
-	line(windata, color, end, (t_v2){start.x, end.y});
+	int	i;
+
+	i = start.x;
+	while (i < start.x + size)
+	{
+		line(windata, color, (t_v2){i, start.y}, (t_v2){i, start.y + size}, true);
+		i++;
+	}
 }
 
 // Cleans the buffer window

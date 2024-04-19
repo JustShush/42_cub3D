@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/17 17:20:39 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:15:34 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,18 @@ static int	key_press(int keycode, t_windata *windata)
 		moved = move_player(&windata->player, DOWN);
 	else if (keycode == K_D || keycode == K_RIGHT)
 		moved = rotate_player(&windata->player, RIGHT);
-	if (keycode == K_ESC)
+	else if (keycode == K_PLUS || keycode == K_MINUS)
+	{
+		if (keycode == K_PLUS)
+			moved = player_zoom(&windata->player, PLAYER_ZOOM);
+		else
+			moved = player_zoom(&windata->player, -PLAYER_ZOOM);
+		update_settings(windata);
+	}
+	else if (keycode == K_ESC)
 		close_win(windata);
 	if (moved)
-		drawMap(windata, &windata->sprites);
+		drawMapToScreen(windata);
 	return (0);
 }
 
