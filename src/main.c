@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:24:26 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:40:18 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,17 @@ int map[10][10] = {
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
+void	printMap(char **map) {
+	int i = 0;
+	int j = 0;
+
+	while ()
+}
+
+void init(t_windata *data) {
+	data->smap.map = map_init(data->input);
+	printMap(data->smap.map);
+}
 
 int	main(int argc, char **argv)
 {
@@ -43,6 +54,8 @@ int	main(int argc, char **argv)
 	if (!load_sprites(data.mlx, &data.sprites))
 		close_win(&data);
 	init_event_handlers(&data);
+	data.input = argv[1];
+	init(&data);
 	// buffer logic
 	data.win_buffer.img = mlx_new_image(data.mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data.win_buffer.img)
