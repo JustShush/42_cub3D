@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:17:16 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 00:57:28 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:12:02 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_v3f	raycast(t_windata *windata, int map[][10], double angle)
     } else {
         vRayLength.y = (mapCheck.y + 1 - rayStart.y) * vRayUnitStepSize.y;
     }
-	double	maxRaydist = 700;
+	double	maxRaydist = 10 * 2;
 	double	dist = 0;
 	bool	hitWall = false;
 	while (!hitWall && dist < maxRaydist)

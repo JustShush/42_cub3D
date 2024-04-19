@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:24:26 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:11:38 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft_memset(&data, 0, sizeof(t_windata));
-	data.player = (t_player){(t_v2f){5, 5}, -PI / 2, PI / 2};
+	data.player = (t_player){(t_v2f){5, 5}, PI / 2, PI / 2};
 	update_settings(&data);
 	data.settings.ceiling_color = 0x0000DD;
 	data.settings.floor_color = 0x964B00;
@@ -162,7 +162,7 @@ void	drawScreen(t_windata *windata)
 		projected_wall_height = (int)(windata->settings.projection_plane_distance / rayInter.z);
 		wall_top = (WIN_HEIGHT / 2) - (projected_wall_height / 2);
 		wall_bottom = (WIN_HEIGHT / 2) + (projected_wall_height / 2);
-		draw_vertical_line(windata, (int)i, wall_top, wall_bottom, WALL_COLOR);
+		draw_vertical_line(windata, (int)i, wall_top, wall_bottom, darken_color(WALL_COLOR, map_number(rayInter.z, (t_v2f){0, 8}, (t_v2f){0, 0.7})));
 		angle += windata->settings.ray_increment;
 		i++;
 	}

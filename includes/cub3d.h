@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:23:09 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:01:56 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,9 @@ void	draw_minimap_ray(t_windata *windata, t_v3f rayInter);
 
 //  Settings
 void	update_settings(t_windata	*windata);
+
+//  Utils
+int		darken_color(int hexColor, double blendFactor);
+double	map_number(double x, t_v2f in, t_v2f out);
 
 #endif
