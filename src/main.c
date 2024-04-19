@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:16:55 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:24:26 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	main(int argc, char **argv)
 	ft_memset(&data, 0, sizeof(t_windata));
 	data.player = (t_player){(t_v2f){5, 5}, -PI / 2, PI / 2};
 	update_settings(&data);
+	data.settings.ceiling_color = 0x0000DD;
+	data.settings.floor_color = 0x964B00;
 	data.mlx = mlx_init();
 	data.mlx_win = mlx_new_window(data.mlx, WIN_WIDTH, WIN_HEIGHT,
 			PROGRAM_NAME);
@@ -108,7 +110,7 @@ void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
 			/* PUT SKY PIXELS */
 			for (int i = 0; i < bytes_per_pixel; i++)
 			{
-				img_data[pixel_index + i] = (SKY_COLOR >> (i * 8)) & 0xFF;
+				img_data[pixel_index + i] = (windata->settings.ceiling_color >> (i * 8)) & 0xFF;
 			}
 		}
 		if (y >= top && y < bottom)
@@ -124,7 +126,7 @@ void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
 			/* PUT GROUND PIXELS */
 			for (int i = 0; i < bytes_per_pixel; i++)
 			{
-				img_data[pixel_index + i] = (GROUND_COLOR >> (i * 8)) & 0xFF;
+				img_data[pixel_index + i] = (windata->settings.floor_color >> (i * 8)) & 0xFF;
 			}
 		}
 	}

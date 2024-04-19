@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:19:22 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:23:09 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,7 @@
 # define MINIMAP_COLOR_SECONDARY (int) 0x555555
 # define MINIMAP_RAY_COLOR (int) 0xDD1111
 
-# define SKY_COLOR (int) 0x0000DD
 # define WALL_COLOR (int) 0x00DD00
-# define GROUND_COLOR (int) 0x964B00
 
 //# define PROFILER
 # ifdef PROFILER
@@ -87,6 +85,8 @@ typedef struct t_settings
 {
 	double	projection_plane_distance;
 	double	ray_increment;
+	int		ceiling_color;
+	int		floor_color;
 }	t_settings;
 
 typedef struct t_windata
