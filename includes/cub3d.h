@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 15:01:56 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:40:05 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,6 @@ typedef struct t_player
 	double	angle;
 	double	fov;
 }	t_player;
-
-typedef struct t_imgbuffer
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}	t_imgbuffer;
 
 typedef struct t_minimap
 {

@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:15:34 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:53:30 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	init_event_handlers(t_windata *windata)
 
 static int	handle_close(t_windata *windata)
 {
+	unload_sprites(windata->mlx, &windata->sprites);
+	mlx_destroy_image(windata->mlx, windata->win_buffer.img);
 	close_win(windata);
 	return (0);
 }
@@ -53,7 +55,7 @@ static int	key_press(int keycode, t_windata *windata)
 		update_settings(windata);
 	}
 	else if (keycode == K_ESC)
-		close_win(windata);
+		handle_close(windata);
 	if (moved)
 		drawMapToScreen(windata);
 	return (0);
