@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/18 17:10:07 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:16:55 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ int	main(int argc, char **argv)
 
 	(void)argc;
 	(void)argv;
-	data.player = (t_player){(t_v2){150, 300}, -PI / 2};
+	ft_memset(&data, 0, sizeof(t_windata));
+	data.player = (t_player){(t_v2f){5, 5}, -PI / 2, PI / 2};
+	update_settings(&data);
 	data.mlx = mlx_init();
 	data.mlx_win = mlx_new_window(data.mlx, WIN_WIDTH, WIN_HEIGHT,
 			PROGRAM_NAME);
@@ -54,48 +56,21 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Failed to get image address\n");
 		exit(EXIT_FAILURE);
 	}
-	drawMapToScreen(&data, &data.sprites);
+	drawMapToScreen(&data);
 	mlx_loop(data.mlx);
 	free(data.mlx);
 	free(data.mlx_win);
 	return (0);
 }
 
-void	drawMapToScreen(t_windata *windata, t_sprites *sprites)
+void	drawMapToScreen(t_windata *windata)
 {
-	int		i;
-	int		j;
-	t_v2	pos;
-
-	i = 0;
-	j = 0;
-	(void)sprites;
-	(void)i;
-	(void)j;
-	(void)pos;
-	/*while (i < (int)(sizeof(map) / sizeof(map[0])))
-	{
-		j = 0;
-		pos = {0,0};
-		while (j < (int) (sizeof(map[0]) / sizeof(map[0][0])))
-		{
-			pos.x = j * IMG_SIZE;
-			pos.y = i * IMG_SIZE;
-			if (map[i][j])
-				draw_sprite(windata->mlx, windata->mlx_win, pos, sprites->wall);
-			else
-				draw_sprite(windata->mlx, windata->mlx_win, pos,
-					sprites->floor);
-			j++;
-		}
-		i++;
-	}*/
 	clear_buffer(&windata->win_buffer);
+	draw_minimap(windata, map);
 	drawScreen(windata);
 	clear_window(windata);
 	mlx_put_image_to_window(windata->mlx, windata->mlx_win,
 		windata->win_buffer.img, 0, 0);
-	//draw_minimap(windata, map);
 }
 
 void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
@@ -126,6 +101,8 @@ void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
 			fprintf(stderr, "Pixel index out of bounds\n");
 			break ;
 		}
+		if (img_data[pixel_index] != 0)
+			continue ;
 		if (y >= 0 && y < top)
 		{
 			/* PUT SKY PIXELS */
@@ -163,14 +140,14 @@ void	drawScreen(t_windata *windata)
 	int		wall_top;
 	int		wall_bottom;
 
-	angle = windata->player.angle - FOV / 2;
+	angle = windata->player.angle - windata->player.fov / 2;
 	i = 0;
 #ifdef PROFILER
 	clock_t start, end;
 	double cpu_time_used;
 	start = clock();
 #endif
-	while (angle < windata->player.angle + FOV / 2)
+	while (angle < windata->player.angle + windata->player.fov / 2)
 	{
 		rayInter = raycast(windata, map, angle);
 		tmpangle = windata->player.angle - angle;
@@ -178,12 +155,13 @@ void	drawScreen(t_windata *windata)
 			tmpangle += 2 * PI;
 		if (tmpangle > 2 * PI)
 			tmpangle -= 2 * PI;
+		draw_minimap_ray(windata, rayInter);
 		rayInter.z *= cos(tmpangle); // Applying fisheye correction
-		projected_wall_height = (int)(PROJECTION_PLANE_DISTANCE / rayInter.z);
+		projected_wall_height = (int)(windata->settings.projection_plane_distance / rayInter.z);
 		wall_top = (WIN_HEIGHT / 2) - (projected_wall_height / 2);
 		wall_bottom = (WIN_HEIGHT / 2) + (projected_wall_height / 2);
-		draw_vertical_line(windata, (int)i, wall_top, wall_bottom, 0x00FF00);
-		angle += RAY_INCREMENT;
+		draw_vertical_line(windata, (int)i, wall_top, wall_bottom, WALL_COLOR);
+		angle += windata->settings.ray_increment;
 		i++;
 	}
 #ifdef PROFILER
@@ -195,7 +173,3 @@ void	drawScreen(t_windata *windata)
 #endif
 }
 
-/*void	draw_minimap(t_windata *windata, int map[][10], int scale, t_v2 pos)
-{
-	
-}*/

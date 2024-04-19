@@ -1,6 +1,6 @@
 NAME = cub3d
 CC = cc
-CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g# -fsanitize=address -static-libasan
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g -fsanitize=address -static-libasan
 
 includefolder = includes/
 LIBFT_DIR = libft/
@@ -13,7 +13,7 @@ INCLUDES = -I $(includefolder) -I $(LIBFT_DIR) -I $(MLX_DIR)
 SRC_FOLDER = src/
 OBJ_DIR = obj/
 
-SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c
+SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c minimap.c settings.c
 RENDER_FILES = draw.c sprite.c
 
 INCLUDE_HEADERS = $(addprefix $(includefolder), \

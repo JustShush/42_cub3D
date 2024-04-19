@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 18:15:03 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/18 16:45:02 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:16:02 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,19 @@
 
 bool	move_player(t_player *player, enum e_player_direction dir)
 {
-	t_v2	new_pos;
-	t_v2	vdir;
+	t_v2f	new_pos;
+	t_v2f	vdir;
 
 
 	if (dir == DOWN)
-		vdir = v2from_angle(player->angle, -20);
+		vdir = v2fmul_scalar(v2ffrom_angle(player->angle), -MOVEMENT_SPEED);
 	else if (dir == UP)
-		vdir = v2from_angle(player->angle, +20);
+		vdir = v2fmul_scalar(v2ffrom_angle(player->angle), +MOVEMENT_SPEED);
 	else
 		return (false);
 
-	new_pos = v2add(player->pos, vdir);
-	/*if (map[(int)new_pos.y][(int)new_pos.x] == 0)*/
-		player->pos = new_pos;
+	new_pos = v2fadd(player->pos, vdir);
+	player->pos = new_pos;
 	return (true);
 }
 
@@ -43,5 +42,11 @@ bool	rotate_player(t_player *player, enum e_player_direction dir)
 		player->angle -= 2 * PI;
 	while (player->angle < -2 * PI)
 		player->angle += 2 * PI;
+	return (true);
+}
+
+bool	player_zoom(t_player *player, double zoom)
+{
+	player->fov += zoom;
 	return (true);
 }
