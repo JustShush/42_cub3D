@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:41:37 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 15:49:56 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:57:13 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ bool	load_sprites(void *mlx, t_sprites *sprites)
 	sprites->wall = load_sprite(mlx, SPRITES_DIR WALL_PATH);
 	if (!sprites->wall.img || !sprites->wall.addr)
 		return (unload_sprites(mlx, sprites), false);
-	sprites->floor = load_sprite(mlx, SPRITES_DIR FLOOR_PATH);
-	if (!sprites->floor.img || !sprites->wall.addr)
+	sprites->wall2 = load_sprite(mlx, SPRITES_DIR WALL2_PATH);
+	if (!sprites->wall2.img || !sprites->wall.addr)
 		return (unload_sprites(mlx, sprites), false);
 	return (true);
 }
@@ -48,7 +48,7 @@ t_imgbuffer	load_sprite(void *mlx, char *path)
 void	unload_sprites(void *mlx, t_sprites *sprites)
 {
 	mlx_destroy_image(mlx, sprites->wall.img);
-	mlx_destroy_image(mlx, sprites->floor.img);
+	mlx_destroy_image(mlx, sprites->wall2.img);
 }
 
 void	draw_sprite(void *mlx, void *mlx_win, t_v2 pos, void *sprite)

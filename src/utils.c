@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 14:56:07 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 15:13:13 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:49:20 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,3 +34,13 @@ double	map_number(double x, t_v2f in, t_v2f out)
 {
 	return (out.x + (x - in.x) * (out.y - out.x) / (in.y - in.x));
 }
+
+t_imgbuffer	get_sprite_by_side(t_sprites *sprites, enum e_ray_side side)
+{
+	if (side == NORTH || side == SOUTH)
+		return (sprites->wall);
+	if (side == EAST || side == WEST)
+		return (sprites->wall2);
+	return (sprites->wall);
+}
+

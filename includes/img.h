@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:31:23 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 15:49:36 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:49:00 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 # define IMG_H
 
 // Available image sizes 64 / 128
-# define IMG_SIZE 64
+# define IMG_SIZE 512
 # define SPRITES_DIR "sprites/"
 
-# define WALL_PATH "rock_wall.xpm"
-# define FLOOR_PATH "wood_floor.xpm"
+// old one
+//# define WALL_PATH "rock_wall.xpm"
+# define WALL_PATH "wall_512.xpm"
+# define WALL2_PATH "wall2_512.xpm"
+//# define FLOOR_PATH "wood_floor.xpm"
 
 // Errors
 # define ERROR_IMG_SIZE "Invalid sprite size\n"
@@ -40,7 +43,7 @@ typedef struct t_imgbuffer
 typedef struct t_sprites
 {
 	t_imgbuffer	wall;
-	t_imgbuffer	floor;
+	t_imgbuffer	wall2;
 }	t_sprites;
 
 //  Render
