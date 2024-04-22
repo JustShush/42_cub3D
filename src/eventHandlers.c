@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 15:53:30 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 20:06:17 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 
 static int	key_press(int keycode, t_windata *windata);
 static int	handle_close(t_windata *windata);
+static int	mouse_move(int x, int y, t_windata *windata);
 
 void	init_event_handlers(t_windata *windata)
 {
 	mlx_hook(windata->mlx_win, KeyPress, KeyPressMask, key_press, windata);
 	mlx_hook(windata->mlx_win, DestroyNotify, KeyPressMask, handle_close,
 		windata);
+	mlx_hook(windata->mlx_win, MotionNotify, PointerMotionMask, mouse_move, (void*) windata);
 }
 
 static int	handle_close(t_windata *windata)
@@ -33,31 +35,38 @@ static int	handle_close(t_windata *windata)
 
 static int	key_press(int keycode, t_windata *windata)
 {
-	(void)windata;
-	bool	moved;
-
-	moved = false;
-	//printf("keycode: %d\n", keycode);
 	if (keycode == K_W || keycode == K_UP)
-		moved = move_player(&windata->player, UP);
+		move_player(&windata->player, UP);
 	else if (keycode == K_A || keycode == K_LEFT)
-		moved = rotate_player(&windata->player, LEFT);
+		move_player(&windata->player, LEFT);
 	else if (keycode == K_S || keycode == K_DOWN)
-		moved = move_player(&windata->player, DOWN);
+		move_player(&windata->player, DOWN);
 	else if (keycode == K_D || keycode == K_RIGHT)
-		moved = rotate_player(&windata->player, RIGHT);
+		move_player(&windata->player, RIGHT);
 	else if (keycode == K_PLUS || keycode == K_MINUS)
 	{
 		if (keycode == K_PLUS)
-			moved = player_zoom(&windata->player, PLAYER_ZOOM);
+			player_zoom(&windata->player, PLAYER_ZOOM);
 		else
-			moved = player_zoom(&windata->player, -PLAYER_ZOOM);
+			player_zoom(&windata->player, -PLAYER_ZOOM);
 		update_settings(windata);
 	}
 	else if (keycode == K_ESC)
 		handle_close(windata);
-	if (moved)
-		drawMapToScreen(windata);
+	return (0);
+}
+
+static int	mouse_move(int x, int y, t_windata *windata)
+{
+	(void)y;
+	if (windata->player.mouse_x != -1) {
+        int delta_x = x - windata->player.mouse_x;
+        double sensitivity = 0.005;
+	
+		windata->player.angle += delta_x * sensitivity;
+        windata->player.angle = fmod(windata->player.angle, 2 * PI);
+    }
+    windata->player.mouse_x = x;
 	return (0);
 }
 
