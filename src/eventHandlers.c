@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 20:06:17 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 20:40:41 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,16 @@ static int	key_press(int keycode, t_windata *windata)
 {
 	if (keycode == K_W || keycode == K_UP)
 		move_player(&windata->player, UP);
-	else if (keycode == K_A || keycode == K_LEFT)
+	else if (keycode == K_A)
 		move_player(&windata->player, LEFT);
 	else if (keycode == K_S || keycode == K_DOWN)
 		move_player(&windata->player, DOWN);
-	else if (keycode == K_D || keycode == K_RIGHT)
+	else if (keycode == K_D)
 		move_player(&windata->player, RIGHT);
+	else if (keycode == K_LEFT)
+		rotate_player(&windata->player, LEFT);
+	else if (keycode == K_RIGHT)
+		rotate_player(&windata->player, RIGHT);
 	else if (keycode == K_PLUS || keycode == K_MINUS)
 	{
 		if (keycode == K_PLUS)
