@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:54:21 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 00:36:56 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:59:12 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	draw_minimap(t_windata *windata, int map[][10])
 	}
 }
 
-void	draw_minimap_ray(t_windata *windata, t_v3f rayInter)
+void	draw_minimap_ray(t_windata *windata, t_v2f rayInter)
 {
 	t_v2	start;
 	t_v2	end;

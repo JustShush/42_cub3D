@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:23:09 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:55:36 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,21 +58,27 @@ enum	e_player_direction
 	RIGHT
 };
 
+enum	e_ray_side
+{
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST
+};
+
+typedef struct t_ray
+{
+	t_v2f				hit_pos;
+	double				dist;
+	enum	e_ray_side	side;
+}	t_ray;
+
 typedef struct t_player
 {
 	t_v2f	pos;
 	double	angle;
 	double	fov;
 }	t_player;
-
-typedef struct t_imgbuffer
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}	t_imgbuffer;
 
 typedef struct t_minimap
 {
@@ -122,13 +128,18 @@ bool	rotate_player(t_player *player, enum e_player_direction dir);
 bool	player_zoom(t_player *player, double zoom);
 
 //  Raycasting
-t_v3f	raycast(t_windata *windata, int map[][10], double angle);
+t_ray	raycast(t_windata *windata, int map[][10], double angle);
 
 //  Minimap
 void	draw_minimap(t_windata *windata, int map[][10]);
-void	draw_minimap_ray(t_windata *windata, t_v3f rayInter);
+void	draw_minimap_ray(t_windata *windata, t_v2f rayInter);
 
 //  Settings
 void	update_settings(t_windata	*windata);
+
+//  Utils
+int		darken_color(int hexColor, double blendFactor);
+double	map_number(double x, t_v2f in, t_v2f out);
+t_imgbuffer	get_sprite_by_side(t_sprites *sprites, enum e_ray_side side);
 
 #endif
