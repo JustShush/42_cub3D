@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 00:38:29 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 19:43:04 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,12 @@ void	clear_window(t_windata *windata)
 	mlx_clear_window(windata->mlx, windata->mlx_win);
 }
 
-void	clear_buffer(t_imgbuffer *buffer)
+void	clear_img_buffer(t_imgbuffer *buffer, t_settings *settings)
 {
+	(void)settings;
 	ft_memset(buffer->addr, 0, buffer->line_length * WIN_HEIGHT);
+	// paint the buffer with the ceiling color
+	//ft_memset(buffer->addr, settings->ceiling_color, buffer->line_length * WIN_HEIGHT / 2);
+	// paint the buffer with the floor color
+	//ft_memset(buffer->addr + (buffer->line_length * WIN_HEIGHT / 2), settings->floor_color, buffer->line_length * WIN_HEIGHT / 2);
 }

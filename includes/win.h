@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:50:07 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:15:52 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 19:11:31 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@
 enum					e_hooking_event
 {
 	KeyPress = 2,
+	MotionNotify = 6,
 	DestroyNotify = 17,
 };
 
 enum					e_event_mask
 {
 	NoEventMask = 0L,
-	KeyPressMask = (1L << 0)
+	KeyPressMask = (1L << 0),
+	PointerMotionMask = (1L << 6),
 };
 
 enum					e_key_code

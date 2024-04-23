@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 18:54:48 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 20:28:35 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,21 @@ int map[10][10] = {
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
+int loop_hook(t_windata *data) {
+    struct timeval now;
+    long elapsed;
+
+    gettimeofday(&now, NULL);
+    elapsed = (now.tv_sec - data->frame_control.last_update.tv_sec) * 1000;
+    elapsed += (now.tv_usec - data->frame_control.last_update.tv_usec) / 1000;
+
+    if (elapsed >= data->frame_control.frame_delay) {
+        drawMapToScreen(data);  // Your update and render functions
+        data->frame_control.last_update = now;
+    }
+
+    return (0);
+}
 
 int	main(int argc, char **argv)
 {
@@ -33,7 +48,9 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft_memset(&data, 0, sizeof(t_windata));
-	data.player = (t_player){(t_v2f){5, 5}, PI / 2, PI / 2};
+	data.player = (t_player){(t_v2f){5, 5}, PI / 2, PI / 2, -1};
+	gettimeofday(&data.frame_control.last_update, NULL);  // Get current time
+	data.frame_control.frame_delay = 1000.0 / 60.0;  // For 60 FPS, 1000 ms / 60
 	update_settings(&data);
 	data.settings.ceiling_color = 0x0000DD;
 	data.settings.floor_color = 0x964B00;
@@ -58,7 +75,7 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Failed to get image address\n");
 		exit(EXIT_FAILURE);
 	}
-	drawMapToScreen(&data);
+	mlx_loop_hook(data.mlx, loop_hook, &data);
 	mlx_loop(data.mlx);
 	free(data.mlx);
 	free(data.mlx_win);
@@ -67,10 +84,9 @@ int	main(int argc, char **argv)
 
 void	drawMapToScreen(t_windata *windata)
 {
-	clear_buffer(&windata->win_buffer);
+	clear_img_buffer(&windata->win_buffer, &windata->settings);
 	draw_minimap(windata, map);
 	drawScreen(windata);
-	clear_window(windata);
 	mlx_put_image_to_window(windata->mlx, windata->mlx_win,
 		windata->win_buffer.img, 0, 0);
 }

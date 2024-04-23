@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 18:55:36 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 20:04:24 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <sys/time.h>
 
 # include <mlx.h>
 # include <libft.h>
@@ -78,6 +79,7 @@ typedef struct t_player
 	t_v2f	pos;
 	double	angle;
 	double	fov;
+	int		mouse_x;
 }	t_player;
 
 typedef struct t_minimap
@@ -95,15 +97,21 @@ typedef struct t_settings
 	int		floor_color;
 }	t_settings;
 
+typedef struct s_frame_control {
+    struct timeval last_update;
+    float frame_delay;
+} t_frame_control;
+
 typedef struct t_windata
 {
-	void		*mlx;
-	void		*mlx_win;
-	t_imgbuffer	win_buffer;
-	t_sprites	sprites;
-	t_minimap	minimap;
-	t_player	player;
-	t_settings	settings;
+	void			*mlx;
+	void			*mlx_win;
+	t_imgbuffer		win_buffer;
+	t_sprites		sprites;
+	t_minimap		minimap;
+	t_player		player;
+	t_settings		settings;
+	t_frame_control frame_control;
 }	t_windata;
 
 void	drawMapToScreen(t_windata *windata);
@@ -120,7 +128,7 @@ void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos, bool only_if_0);
 void    square(t_windata *windata, int color, t_v2 center, int side_length, float angle);
 void	rect(t_windata *windata, int color, t_v2 start, int size);
 void	clear_window(t_windata *windata);
-void	clear_buffer(t_imgbuffer *buffer);
+void	clear_img_buffer(t_imgbuffer *buffer, t_settings *settings);
 
 //  Player
 bool	move_player(t_player *player, enum e_player_direction dir);

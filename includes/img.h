@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:31:23 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 18:49:00 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/22 20:01:16 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 //# define WALL_PATH "rock_wall.xpm"
 # define WALL_PATH "wall_512.xpm"
 # define WALL2_PATH "wall2_512.xpm"
+# define WALL3_PATH "wall3_512.xpm"
+# define WALL4_PATH "wall4_512.xpm"
 //# define FLOOR_PATH "wood_floor.xpm"
 
 // Errors
@@ -44,6 +46,8 @@ typedef struct t_sprites
 {
 	t_imgbuffer	wall;
 	t_imgbuffer	wall2;
+	t_imgbuffer	wall3;
+	t_imgbuffer	wall4;
 }	t_sprites;
 
 //  Render
