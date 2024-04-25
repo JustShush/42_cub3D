@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:23:09 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/25 14:40:27 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@
 # ifdef PROFILER
 #  include <time.h>
 # endif
+
+typedef struct t_map
+{
+	char **map;
+}	t_map;
 
 
 enum	e_player_direction
@@ -98,6 +103,8 @@ typedef struct t_windata
 	t_minimap	minimap;
 	t_player	player;
 	t_settings	settings;
+	char		*input;
+	t_map		smap;
 }	t_windata;
 
 void	drawMapToScreen(t_windata *windata);
@@ -130,5 +137,21 @@ void	draw_minimap_ray(t_windata *windata, t_v3f rayInter);
 
 //  Settings
 void	update_settings(t_windata	*windata);
+
+
+
+// -------
+char	**map_init(char *file);
+char	**copy_array(char **arr);
+int		get_start_map(char **map);
+int	first_str(char *s1, char *s2);
+
+// check.c
+int		check_map_closed(t_map map, char **bmap);
+
+int	empty_line(char *line);
+
+// frees
+void	free_array(char **arr);
 
 #endif

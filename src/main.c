@@ -6,7 +6,7 @@
 /*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 15:40:18 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:35:56 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,23 @@ int map[10][10] = {
 };
 
 void	printMap(char **map) {
-	int i = 0;
-	int j = 0;
-
-	while ()
+	for (int i = 0; map[i] != NULL; i++) {
+		printf("%s",  map[i]);
+	}
 }
 
 void init(t_windata *data) {
 	data->smap.map = map_init(data->input);
-	printMap(data->smap.map);
+	//if (!data->smap.map)
+		
+	//printMap(data->smap->map);
+	//printf("start map: [%d] %s\n", get_start_map(data->smap.map), data->smap.map[get_start_map(data->smap.map) + 1]);
+}
+
+int check_map(t_map map) {
+	if (check_map_closed(data->smap, data->smap.map))
+		return ()
+	
 }
 
 int	main(int argc, char **argv)
@@ -44,7 +52,7 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft_memset(&data, 0, sizeof(t_windata));
-	data.player = (t_player){(t_v2f){5, 5}, -PI / 2, PI / 2};
+	data.player = (t_player){(t_v2f){5, 5}, - PI / 2, PI / 2};
 	update_settings(&data);
 	data.settings.ceiling_color = 0x0000DD;
 	data.settings.floor_color = 0x964B00;
@@ -56,6 +64,8 @@ int	main(int argc, char **argv)
 	init_event_handlers(&data);
 	data.input = argv[1];
 	init(&data);
+	if (check_map(data->smap) == 0) 
+		return (0);
 	// buffer logic
 	data.win_buffer.img = mlx_new_image(data.mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data.win_buffer.img)
