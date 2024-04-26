@@ -6,7 +6,7 @@
 /*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/25 19:35:56 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/26 20:05:42 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,22 @@ void	printMap(char **map) {
 }
 
 void init(t_windata *data) {
-	data->smap.map = map_init(data->input);
+	data->smap.file = map_init(data->input);
 	//if (!data->smap.map)
 		
-	//printMap(data->smap->map);
+	printMap(data->smap.file);
+	printMap(data->smap.map);
 	//printf("start map: [%d] %s\n", get_start_map(data->smap.map), data->smap.map[get_start_map(data->smap.map) + 1]);
 }
 
 int check_map(t_map map) {
-	if (check_map_closed(data->smap, data->smap.map))
-		return ()
-	
+	if (check_map_closed(map, map.file))
+		return (1);
+	else if (check_chars(map.file))
+		return (1);
+	else if (check_valid_color(map.textures))
+		return (1);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -62,10 +67,10 @@ int	main(int argc, char **argv)
 	if (!load_sprites(data.mlx, &data.sprites))
 		close_win(&data);
 	init_event_handlers(&data);
-	data.input = argv[1];
+	data.input = argv[1]; // ..............................
 	init(&data);
-	if (check_map(data->smap) == 0) 
-		return (0);
+	if (check_map(data.smap))
+		return (-1);
 	// buffer logic
 	data.win_buffer.img = mlx_new_image(data.mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data.win_buffer.img)

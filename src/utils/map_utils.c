@@ -40,3 +40,26 @@ int	get_start_map(char **map)
 		i--;
 	return (i);
 }
+
+int	get_y(char *file)
+{
+	int		i;
+	int		fd;
+	char	*str;
+
+	i = 0;
+	fd = open(file, O_RDONLY);
+	if (fd == -1)
+		return (printf("Error\nCould not open file\n"));
+	while (1)
+	{
+		str = get_next_line(fd);
+		if (str == NULL)
+			break ;
+		if (!first_str(str, "1"))
+			i++;
+		free(str);
+	}
+	close(fd);
+	return (i);
+}

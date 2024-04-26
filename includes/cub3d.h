@@ -6,7 +6,7 @@
 /*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/25 14:40:27 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/26 20:03:03 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <stddef.h>
 
 # include <mlx.h>
 # include <libft.h>
@@ -49,9 +50,27 @@
 #  include <time.h>
 # endif
 
+typedef struct t_RGB
+{
+	int	r;
+	int	g;
+	int	b;
+}				t_RGB;
+
+typedef struct t_textures
+{
+	t_RGB	*c;
+	t_RGB	*f;
+}				t_textures;
+
 typedef struct t_map
 {
-	char **map;
+	char		**file; // the entire map file
+	char		**map; // just the map
+	int			y; // height of the map
+	t_textures	textures;
+	int			c_texture; // cealing texture count
+	int			f_texture; // floor texture count
 }	t_map;
 
 
@@ -144,10 +163,16 @@ void	update_settings(t_windata	*windata);
 char	**map_init(char *file);
 char	**copy_array(char **arr);
 int		get_start_map(char **map);
-int	first_str(char *s1, char *s2);
+int		first_str(char *s1, char *s2);
 
 // check.c
 int		check_map_closed(t_map map, char **bmap);
+int		check_chars(char **map);
+int	check_valid_color(t_textures textures);
+int		check_color(char *line, char **color);
+
+// in map_utils.c
+int	get_y(char *file);
 
 int	empty_line(char *line);
 
