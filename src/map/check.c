@@ -62,7 +62,7 @@ int	check_chars(char **map)
 	return (1);
 }
 
-int	check_valid_color(t_textures textures)
+/*int	check_valid_color(t_textures textures)
 {
 	if (textures.c->r > 255 || textures.c->r < 0)
 		return (printf("Error\nInvalid color\n"));
@@ -77,7 +77,7 @@ int	check_valid_color(t_textures textures)
 	if (textures.f->b > 255 || textures.f->b < 0)
 		return (printf("Error\nInvalid color\n"));
 	return (0);
-}
+}*/
 
 int	check_color(char *line, char **color)
 {

@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:31:23 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/15 17:28:34 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:03:53 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,25 @@
 # include <stdbool.h>
 # include <vecs.h>
 
+typedef struct t_sprite
+{
+	void	*img;
+	char	*filename;
+}	t_sprite;
+
 typedef struct t_sprites
 {
-	void	*wall;
-	void	*floor;
+	t_sprite	north;
+	t_sprite	south;
+	t_sprite	west;
+	t_sprite	east;
+	int			ceiling;
+	int			floor;
 }	t_sprites;
 
 //  Render
 bool	load_sprites(void *mlx, t_sprites *sprites);
 void	draw_sprite(void *mlx, void *mlx_win, t_v2 pos, void *sprite);
+void	*load_sprite(void *mlx, char *filename);
 
 #endif

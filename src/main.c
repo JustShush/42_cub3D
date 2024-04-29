@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/26 20:05:42 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:04:44 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-int map[10][10] = {
+/*int map[10][10] = {
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -23,30 +23,56 @@ int map[10][10] = {
 	{1, 1, 1, 0, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
+};*/
 
 void	printMap(char **map) {
+	if (map == NULL) {
+		printf("map is NULL\n");
+		return ;
+	}
 	for (int i = 0; map[i] != NULL; i++) {
-		printf("%s",  map[i]);
+		printf("%s\n",  map[i]);
 	}
 }
 
-void init(t_windata *data) {
-	data->smap.file = map_init(data->input);
-	//if (!data->smap.map)
-		
-	printMap(data->smap.file);
-	printMap(data->smap.map);
-	//printf("start map: [%d] %s\n", get_start_map(data->smap.map), data->smap.map[get_start_map(data->smap.map) + 1]);
+bool	init(t_windata *data)
+{
+	// check valid map name (ends with ext .cub) and exists in the fs
+	if (!ends_with(data->smap.filename, MAP_EXT))
+		return (pe(INVALID_MAP_EXT), false);
+	if (!map_init(&data->smap))
+		return (false);
+	
+	int i = 0;
+	int j = 0;
+	while (i < data->smap.tilemap.size.y)
+	{
+		j = 0;
+		while (j < data->smap.tilemap.size.x)
+		{
+			if (data->smap.tilemap.map[i][j] == -1)
+				printf("-");
+			else if (data->smap.tilemap.map[i][j] == 0)
+				printf("0");
+			else
+				printf("1");
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+
+	return (true);
 }
 
-int check_map(t_map map) {
+int	check_map(t_map map)
+{
 	if (check_map_closed(map, map.file))
 		return (1);
 	else if (check_chars(map.file))
 		return (1);
-	else if (check_valid_color(map.textures))
-		return (1);
+	/*else if (check_valid_color(map.textures))
+		return (1);*/
 	return (0);
 }
 
@@ -55,22 +81,21 @@ int	main(int argc, char **argv)
 	t_windata	data;
 
 	(void)argc;
-	(void)argv;
 	ft_memset(&data, 0, sizeof(t_windata));
-	data.player = (t_player){(t_v2f){5, 5}, - PI / 2, PI / 2};
+	data.smap.filename = argv[1]; // ..............................
+	if (!init(&data))
+		exit(EXIT_FAILURE);
+	data.player = (t_player){v2_to_v2f(data.smap.player_pos), - PI / 2, PI / 2};// TODO: set rotation depending on the map char dir
+	//printf("Player pos: %d, %d\n", data.player.pos.x, data.player.pos.y);
 	update_settings(&data);
-	data.settings.ceiling_color = 0x0000DD;
-	data.settings.floor_color = 0x964B00;
 	data.mlx = mlx_init();
 	data.mlx_win = mlx_new_window(data.mlx, WIN_WIDTH, WIN_HEIGHT,
 			PROGRAM_NAME);
-	if (!load_sprites(data.mlx, &data.sprites))
+	if (!load_sprites(data.mlx, &data.smap.sprites))
 		close_win(&data);
 	init_event_handlers(&data);
-	data.input = argv[1]; // ..............................
-	init(&data);
-	if (check_map(data.smap))
-		return (-1);
+	/*if (check_map(data.smap))
+		return (printf("here\n"), -1);*/
 	// buffer logic
 	data.win_buffer.img = mlx_new_image(data.mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data.win_buffer.img)
@@ -95,8 +120,8 @@ int	main(int argc, char **argv)
 
 void	drawMapToScreen(t_windata *windata)
 {
-	clear_buffer(&windata->win_buffer);
-	draw_minimap(windata, map);
+	reset_buffer(&windata->win_buffer, &windata->smap.sprites);
+	draw_minimap(windata);
 	drawScreen(windata);
 	clear_window(windata);
 	mlx_put_image_to_window(windata->mlx, windata->mlx_win,
@@ -135,15 +160,15 @@ void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
 			continue ;
 		if (y >= 0 && y < top)
 		{
-			/* PUT SKY PIXELS */
+			// PUT SKY PIXELS 
 			for (int i = 0; i < bytes_per_pixel; i++)
 			{
-				img_data[pixel_index + i] = (windata->settings.ceiling_color >> (i * 8)) & 0xFF;
+				img_data[pixel_index + i] = (windata->smap.sprites.ceiling >> (i * 8)) & 0xFF;
 			}
 		}
 		if (y >= top && y < bottom)
 		{
-			/* PUT WALL PIXELS */
+			// PUT WALL PIXELS
 			for (int i = 0; i < bytes_per_pixel; i++)
 			{
 				img_data[pixel_index + i] = (color >> (i * 8)) & 0xFF;
@@ -151,10 +176,10 @@ void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
 		}
 		if (y >= bottom && y < WIN_HEIGHT)
 		{
-			/* PUT GROUND PIXELS */
+			// PUT GROUND PIXELS
 			for (int i = 0; i < bytes_per_pixel; i++)
 			{
-				img_data[pixel_index + i] = (windata->settings.floor_color >> (i * 8)) & 0xFF;
+				img_data[pixel_index + i] = (windata->smap.sprites.floor >> (i * 8)) & 0xFF;
 			}
 		}
 	}
@@ -179,7 +204,7 @@ void	drawScreen(t_windata *windata)
 #endif
 	while (angle < windata->player.angle + windata->player.fov / 2)
 	{
-		rayInter = raycast(windata, map, angle);
+		rayInter = raycast(windata, angle);
 		tmpangle = windata->player.angle - angle;
 		if (tmpangle < 0)
 			tmpangle += 2 * PI;

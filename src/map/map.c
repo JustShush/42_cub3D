@@ -3,37 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 15:14:37 by dimarque          #+#    #+#             */
-/*   Updated: 2024/04/26 19:34:07 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:08:06 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-int	readmap(char **map, char *file)
+// TODO: change return type to bool
+int	readmap(t_map *map)
 {
 	int		fd;
 	int		i;
 	char	*line;
 
 	i = 0;
-	fd = open(file, O_RDONLY);
+	fd = open(map->filename, O_RDONLY);
 	if (fd < 0)
-	{
-		printf("Error\nMap not found\n");
-		return (1);
-	}
+		return (pe(MAP_NOT_FOUND), 1);
 	line = get_next_line(fd);
 	while (line)
 	{
-		map[i] = ft_strdup(line);
+		if (empty_line(line))
+		{
+			free(line);
+			line = get_next_line(fd);
+			continue ;
+		}
+		if (i <= 5)// first 6 valid lines are textures
+			map->file[i] = ft_strtrim(line, " \n\t");
+		else
+			map->file[i] = ft_strtrim(line, "\n\t");/* do not remove spaces */
 		free(line);
+		if (!map->file[i])
+			return (pe(MALLOC_ERROR), 1);
+		printf("map[%d]:|%s|\n", i, map->file[i]);
 		i++;
 		line = get_next_line(fd);
 	}
-	map[i] = NULL;
+	map->file[i] = NULL;
 	close(fd);
 	return (0);
 }
@@ -60,41 +70,156 @@ int	numberoflines(char *file)
 	return (i);
 }
 
-int	tilemap(t_map map, char *map_path)
-{
-	int		i;
-	int		fd;
-	char	*buf;
 
-	i = 0;
-	map.y = get_y(map_path);
-	fd = open(map_path, O_RDONLY);
-	if (fd == -1)
-		return (printf("Error\nCould not open file\n"));
-	map.map = malloc(sizeof(char *) * (map.y + 1));
-	while (i < map.y)
+bool	map_init(t_map	*map)
+{
+	if (!calc_map_size(map))
+		return (pe(MAP_NOT_FOUND), false);
+	printf("map size: %d %d\n", map->size.x, map->size.y);
+	map->file = malloc(sizeof(char *) * (map->size.y + 1));
+	if (!map->file)
+		return (pe(MALLOC_ERROR), false);
+	/* TODO: mem leak check needed */
+	if (readmap(map))
 	{
-		buf = get_next_line(fd);
-		if (!first_str(buf, "1"))
-			map.map[i++] = ft_strdup(buf);
-		free(buf);
+		//free(map);/* this is wrong */
+		return (false);
 	}
-	map.map[i] = 0;
-	close(fd);
-	return (0);
+	if (!parse_map_file(map))
+	{
+		//free(map); /* this is wrong */
+		return (false);
+	}
+
+	return (true);
 }
 
-char	**map_init(char *file)
+bool	parse_map_file_textures(t_map *map)
 {
-	char	**map;
+	enum e_type_identifier	identifier;
+	int						i;
 
-	map = malloc(sizeof(char *) * (numberoflines(file) + 1));
-	if (!map)
-		return (NULL);
-	if (readmap(map, file))
+	i = 0;
+	while (i < TILEMAP_FIRST_INDEX)
 	{
-		free(map);
-		return (NULL);
+		//printf("parse_map_file_textures:%s|\n", map->file[i]);
+		identifier = line_matches_identifier(map->file[i]);
+		if (identifier == INVALID)
+			return (pe(INVALID_IDENTIFIER), false);
+		printf("identifier:%d\n", identifier);
+		if (!parse_identifier(map, map->file[i], identifier))
+			return (false);
+		i++;
 	}
-	return (map);
+	return (true);
+}
+
+bool	handle_tilemap_char(t_map *map, int i, int j)
+{
+	//printf("handle_tilemap_char:%c|\n", map->file[i][j]);
+	if (map->file[i][j] == ' ')
+		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = -1;
+	else if (char_in_set(map->file[i][j], PLAYER_DIRS))
+	{
+		printf("player_dir:%c\n", map->file[i][j]);
+		if (char_in_set(map->player_dir, PLAYER_DIRS))
+			return (pe(MULTIPLE_PLAYERS), false);
+		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = 0;
+		map->player_dir = map->file[i][j];
+		map->player_pos = (t_v2){j, i - TILEMAP_FIRST_INDEX};
+	}
+	else
+		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = map->file[i][j] - '0';
+	return (true);
+}
+
+bool	parse_map_file_tilemap(t_map *map)
+{
+	int		i;
+	int		j;
+
+	i = TILEMAP_FIRST_INDEX;
+	while (map->file[i])
+	{
+		j = 0;
+		while (j < map->tilemap.size.x && map->file[i][j])
+		{
+			if (!char_in_set(map->file[i][j], TILEMAP_VALID_CHARS))
+				return (pe(INVALID_TILEMAP_CHAR), false);
+			if (!handle_tilemap_char(map, i, j))
+				return (false);
+			j++;
+		}
+		i++;
+	}
+	return (true);
+}
+
+bool	parse_map_file(t_map *map)
+{
+	int	i;
+
+	if (!parse_map_file_textures(map))
+		return (false);
+	if (!calculate_tilemap_size(map))
+		return (false);
+	map->tilemap.map = malloc(sizeof(int *) * map->tilemap.size.y + 1);
+	if (!map->tilemap.map)
+		return (pe(MALLOC_ERROR), false);
+	i = 0;
+	while (i < map->tilemap.size.y)
+	{
+		map->tilemap.map[i] = malloc(sizeof(int) * map->tilemap.size.x + 1);
+		if (!map->tilemap.map[i])
+			return (pe(MALLOC_ERROR), false);
+		ft_memset(map->tilemap.map[i], -1, sizeof(int) * map->tilemap.size.x + 1);
+		i++;
+	}
+	if (!parse_map_file_tilemap(map))
+		return (false);
+	return (true);
+}
+
+
+/* Calculates the file height and width */
+bool	calc_map_size(t_map *map)
+{
+	int		fd;
+	char	*str;
+
+	fd = open(map->filename, O_RDONLY);
+	if (fd == -1)
+		return (false);
+	while (1)
+	{
+		str = get_next_line(fd);
+		if (str == NULL)
+			break ;
+		if (empty_line(str))
+			continue ;
+		map->size.y++;
+		if (ft_strlen(str) > (size_t) map->size.x)
+			map->size.x = ft_strlen(str);
+		free(str);
+	}
+	return (close(fd), true);
+}
+
+/* Calculates the tilemap height and width */
+bool	calculate_tilemap_size(t_map *map)
+{
+	int		i;
+
+	i = TILEMAP_FIRST_INDEX;
+	while (i < map->size.y)
+	{
+		if (empty_line(map->file[i]))
+			return (pe(MAP_HAS_EMPTY_LINE), false);
+		map->tilemap.size.y++;
+		if (ft_strlen(map->file[i]) > (size_t) map->tilemap.size.x)
+			map->tilemap.size.x = ft_strlen(map->file[i]);
+		i++;
+	}
+	printf("tilemap size: %d %d\n", map->tilemap.size.x, map->tilemap.size.y);
+	return (true);
 }

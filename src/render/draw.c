@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 00:38:29 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:54:13 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos, bool only_if_0)
 
 	dst = windata->win_buffer.addr + (pos.y * windata->win_buffer.line_length
 			+ pos.x * (windata->win_buffer.bits_per_pixel / 8));
+	if (dst < windata->win_buffer.addr || dst >= windata->win_buffer.addr
+		+ windata->win_buffer.line_length * WIN_HEIGHT)
+		return ;
 	if (only_if_0 && *(unsigned int *)dst != 0)
 		return ;
 	*(unsigned int *)dst = color;
@@ -108,7 +111,11 @@ void	clear_window(t_windata *windata)
 	mlx_clear_window(windata->mlx, windata->mlx_win);
 }
 
-void	clear_buffer(t_imgbuffer *buffer)
+void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites)
 {
+	/*ft_memset(buffer->addr, sprites->ceiling, buffer->line_length * WIN_HEIGHT / 2);
+	ft_memset(buffer->addr + buffer->line_length * WIN_HEIGHT / 2,
+		sprites->floor, buffer->line_length * WIN_HEIGHT / 2);*/
+	(void)sprites;
 	ft_memset(buffer->addr, 0, buffer->line_length * WIN_HEIGHT);
 }
