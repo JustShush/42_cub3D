@@ -63,3 +63,15 @@ int	get_y(char *file)
 	close(fd);
 	return (i);
 }
+
+int	first_char(char *line, char c)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] == ' ')
+		i++;
+	if (line[i] == c)
+		return (1);
+	return (0);
+}

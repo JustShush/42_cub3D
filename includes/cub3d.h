@@ -6,7 +6,7 @@
 /*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/26 20:03:03 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/28 19:38:01 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,16 +165,27 @@ char	**copy_array(char **arr);
 int		get_start_map(char **map);
 int		first_str(char *s1, char *s2);
 
+// map folder
 // check.c
 int		check_map_closed(t_map map, char **bmap);
 int		check_chars(char **map);
 int	check_valid_color(t_textures textures);
 int		check_color(char *line, char **color);
+int		check_double_map(t_map map);
+// textures.c
+int		get_textures(t_map map);
+int		check_textures(t_map map);
 
+// in utils folder
 // in map_utils.c
-int	get_y(char *file);
+int		get_y(char *file);
+int		first_char(char *line, char c);
 
-int	empty_line(char *line);
+// in map_utils2.c
+char	*ft_chrtrim(char *line, char c);
+void	make_null(t_map map, char dir);
+
+int		empty_line(char *line);
 
 // frees
 void	free_array(char **arr);

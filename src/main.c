@@ -6,7 +6,7 @@
 /*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/26 20:05:42 by dimarque         ###   ########.fr       */
+/*   Updated: 2024/04/28 18:55:13 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,11 @@ void init(t_windata *data) {
 }
 
 int check_map(t_map map) {
-	if (check_map_closed(map, map.file))
+	check_double_map(map);
+	get_textures(map);
+	if (!map.file || check_map_closed(map, map.file)) // c_texture != 6
 		return (1);
-	else if (check_chars(map.file))
+	else if (check_textures(map) || check_chars(map.file))
 		return (1);
 	else if (check_valid_color(map.textures))
 		return (1);

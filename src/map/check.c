@@ -105,3 +105,33 @@ int	check_color(char *line, char **color)
 		return (0);
 	return (1);
 }
+
+int	check_double_map(t_map map)
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	j = 0;
+	k = 0;
+	while (map.file[i])
+	{
+		if (first_char(map.file[i], '1'))
+			j++;
+		i++;
+	}
+	i -= 1;
+	while (i >= 0)
+	{
+		if (first_char(map.file[i], '1'))
+			k++;
+		if (empty_line(map.file[i]))
+			break ;
+		i--;
+	}
+	if (j != k)
+		return (1);
+		//exit free "invalid map"
+	return (0);
+}
