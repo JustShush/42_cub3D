@@ -46,7 +46,16 @@ bool	only_digits(char *str)
 	return (true);
 }
 
+// print error to stderr
 void	pe(char *msg)
 {
 	ft_putstr_fd(msg, STDERR_FILENO);
+}
+
+// print error to stderr with msg ex:(Error: invalid map)
+void	pe_msg(char *err, char *msg)
+{
+	pe(err);
+	pe(msg);
+	pe("\n");
 }

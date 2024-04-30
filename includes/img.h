@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:31:23 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 19:03:53 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:35:41 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct t_sprites
 //  Render
 bool	load_sprites(void *mlx, t_sprites *sprites);
 void	draw_sprite(void *mlx, void *mlx_win, t_v2 pos, void *sprite);
+void	unload_sprites(void *mlx, t_sprites *sprites);
 void	*load_sprite(void *mlx, char *filename);
 
 #endif

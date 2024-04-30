@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/19 01:15:34 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 21:08:10 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	close_win(t_windata *windata)
 {
 	mlx_destroy_window(windata->mlx, windata->mlx_win);
 	mlx_destroy_display(windata->mlx);
+	free_map(&windata->smap, windata->mlx);
 	free(windata->mlx);
 	exit(EXIT_SUCCESS);
 }

@@ -64,7 +64,7 @@ bool	parse_identifier(t_map *map, char *line,
 	char	**split;
 
 	split = ft_split(line, ' ');
-	if (!split || !split[1])
+	if (!split || !split[1] || split[2])
 		return (free_array(split), false);
 	if (identifier == NORTH_TEXTURE || identifier == SOUTH_TEXTURE
 		|| identifier == WEST_TEXTURE || identifier == EAST_TEXTURE)
@@ -74,6 +74,8 @@ bool	parse_identifier(t_map *map, char *line,
 	}
 	else if (identifier == FLOOR_COLOR || identifier == CEILING_COLOR)
 	{
+		if (identifier == FLOOR_COLOR && map->sprites.floor != -1)
+			return (pe_msg(DUPLICATE_IDENTIFIER, line), free_array(split), false);
 		if (!parse_color(map, split[1], identifier))
 			return (free_array(split), false);
 	}

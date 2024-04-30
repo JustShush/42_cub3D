@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 20:05:11 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 20:01:19 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 
 // ERRORS
 # define MALLOC_ERROR "Malloc failed\n"
+# define INVALID_ARGS "Invalid arguments\nUsage: ./cub3d <map>\n"
 
 //# define PROFILER
 # ifdef PROFILER
@@ -153,10 +154,12 @@ int		first_str(char *s1, char *s2);
 bool	char_in_set(char c, char *set);
 bool	only_digits(char *str);
 void	pe(char *msg);
+void	pe_msg(char *err, char *msg);
 
 int		empty_line(char *line);
 
 // frees
 void	free_array(char **arr);
+void	free_map(t_map *map, void *mlx);
 
 #endif

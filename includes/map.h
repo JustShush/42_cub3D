@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 15:17:02 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 19:25:04 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 20:10:16 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # define MULTIPLE_PLAYERS "Error: Multiple players found\n"
 # define INVALID_TILEMAP_CHAR "Error: Invalid tilemap character\n"
 # define INVALID_MAP_EXT "Error: Invalid map extension\n"
+# define INVALID_MAP "Error: Invalid map\n"
+# define DUPLICATE_IDENTIFIER "Duplicate identifier\n"
 
 # define NORTH_TEXTURE_IDENTIFIER "NO "
 # define SOUTH_TEXTURE_IDENTIFIER "SO "

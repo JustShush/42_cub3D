@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:41:37 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 19:15:42 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:35:25 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,26 @@ bool	load_sprites(void *mlx, t_sprites *sprites)
 void	draw_sprite(void *mlx, void *mlx_win, t_v2 pos, void *sprite)
 {
 	mlx_put_image_to_window(mlx, mlx_win, sprite, pos.x, pos.y);
+}
+
+void	unload_sprites(void *mlx, t_sprites *sprites)
+{
+	if (sprites->north.img)
+		mlx_destroy_image(mlx, sprites->north.img);
+	if (sprites->north.filename)
+		free(sprites->north.filename);
+	if (sprites->south.img)
+		mlx_destroy_image(mlx, sprites->south.img);
+	if (sprites->south.filename)
+		free(sprites->south.filename);
+	if (sprites->west.img)
+		mlx_destroy_image(mlx, sprites->west.img);
+	if (sprites->west.filename)
+		free(sprites->west.filename);
+	if (sprites->east.img)
+		mlx_destroy_image(mlx, sprites->east.img);
+	if (sprites->east.filename)
+		free(sprites->east.filename);
 }
 
 void	*load_sprite(void *mlx, char *filename)

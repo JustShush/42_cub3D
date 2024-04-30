@@ -19,7 +19,7 @@ RENDER_FILES = draw.c sprite.c
 UTILS_FILES = arr_utils.c gen_utils.c map_utils.c map_parser.c
 
 INCLUDE_HEADERS = $(addprefix $(includefolder), \
-	cub3d.h win.h img.h vecs.h \
+	cub3d.h win.h img.h vecs.h map.h \
 )
 
 FILES = \

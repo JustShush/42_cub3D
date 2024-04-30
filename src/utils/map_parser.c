@@ -6,28 +6,33 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 16:58:19 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 19:22:35 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 20:10:06 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-bool	parse_wall_texture(t_map *map, char *filename, enum e_type_identifier identifier)
+bool	parse_wall_texture(t_map *map, char *filename,
+		enum e_type_identifier identifier)
 {
-	int		fd;
+	int			fd;
+	t_sprite	*sprite;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (pe(WALL_TEXTURE_NOT_FOUND), false);
 	close(fd);
 	if (identifier == NORTH_TEXTURE)
-		map->sprites.north.filename = ft_strdup(filename);
+		sprite = &map->sprites.north;
 	else if (identifier == SOUTH_TEXTURE)
-		map->sprites.south.filename = ft_strdup(filename);
+		sprite = &map->sprites.south;
 	else if (identifier == WEST_TEXTURE)
-		map->sprites.west.filename = ft_strdup(filename);
+		sprite = &map->sprites.west;
 	else if (identifier == EAST_TEXTURE)
-		map->sprites.east.filename = ft_strdup(filename);
+		sprite = &map->sprites.east;
+	if (sprite->filename)
+		return (pe(DUPLICATE_IDENTIFIER), false);
+	sprite->filename = ft_strdup(filename);
 	return (true);
 }
 

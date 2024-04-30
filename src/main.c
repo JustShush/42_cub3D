@@ -6,24 +6,11 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 20:04:44 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 21:27:06 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
-
-/*int map[10][10] = {
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-	{1, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 1, 0, 0, 0, 1, 0, 1, 1},
-	{1, 1, 1, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};*/
 
 void	printMap(char **map) {
 	if (map == NULL) {
@@ -41,10 +28,11 @@ bool	init(t_windata *data)
 	if (!ends_with(data->smap.filename, MAP_EXT))
 		return (pe(INVALID_MAP_EXT), false);
 	if (!map_init(&data->smap))
-		return (false);
-	
-	int i = 0;
+		return (free_map(&data->smap, data->mlx), false);
+
+	int i = 0;// print tilemap
 	int j = 0;
+	printf("---TILEMAP---\n");
 	while (i < data->smap.tilemap.size.y)
 	{
 		j = 0;
@@ -80,8 +68,10 @@ int	main(int argc, char **argv)
 {
 	t_windata	data;
 
-	(void)argc;
+	if (argc != 2)
+		return (pe(INVALID_ARGS), -1);
 	ft_memset(&data, 0, sizeof(t_windata));
+	data.smap.tilemap.map = NULL;
 	data.smap.filename = argv[1]; // ..............................
 	if (!init(&data))
 		exit(EXIT_FAILURE);

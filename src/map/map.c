@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 15:14:37 by dimarque          #+#    #+#             */
-/*   Updated: 2024/04/29 20:08:06 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/04/30 20:47:13 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,20 +76,16 @@ bool	map_init(t_map	*map)
 	if (!calc_map_size(map))
 		return (pe(MAP_NOT_FOUND), false);
 	printf("map size: %d %d\n", map->size.x, map->size.y);
+	if (map->size.x < 3 || map->size.y < 8)
+		return (pe(INVALID_MAP), false);
 	map->file = malloc(sizeof(char *) * (map->size.y + 1));
 	if (!map->file)
 		return (pe(MALLOC_ERROR), false);
-	/* TODO: mem leak check needed */
+	ft_memset(map->file, 0, sizeof(char *) * (map->size.y + 1));
 	if (readmap(map))
-	{
-		//free(map);/* this is wrong */
 		return (false);
-	}
 	if (!parse_map_file(map))
-	{
-		//free(map); /* this is wrong */
 		return (false);
-	}
 
 	return (true);
 }
@@ -100,13 +96,13 @@ bool	parse_map_file_textures(t_map *map)
 	int						i;
 
 	i = 0;
-	while (i < TILEMAP_FIRST_INDEX)
+	while (i < TILEMAP_FIRST_INDEX && i < map->size.y)
 	{
 		//printf("parse_map_file_textures:%s|\n", map->file[i]);
 		identifier = line_matches_identifier(map->file[i]);
 		if (identifier == INVALID)
 			return (pe(INVALID_IDENTIFIER), false);
-		printf("identifier:%d\n", identifier);
+		//printf("identifier:%d\n", identifier);
 		if (!parse_identifier(map, map->file[i], identifier))
 			return (false);
 		i++;
@@ -159,6 +155,8 @@ bool	parse_map_file(t_map *map)
 {
 	int	i;
 
+	map->sprites.ceiling = -1;
+	map->sprites.floor = -1;
 	if (!parse_map_file_textures(map))
 		return (false);
 	if (!calculate_tilemap_size(map))
@@ -196,7 +194,11 @@ bool	calc_map_size(t_map *map)
 		if (str == NULL)
 			break ;
 		if (empty_line(str))
+		{
+			free(str);
+			str = NULL;
 			continue ;
+		}
 		map->size.y++;
 		if (ft_strlen(str) > (size_t) map->size.x)
 			map->size.x = ft_strlen(str);
