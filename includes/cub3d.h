@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/30 20:01:19 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:21:01 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites);
 bool	move_player(t_player *player, enum e_player_direction dir);
 bool	rotate_player(t_player *player, enum e_player_direction dir);
 bool	player_zoom(t_player *player, double zoom);
+bool	player_set_direction(t_player *player, char player_dir);
+bool	player_init(t_player *player, t_v2f pos, char player_dir);
 
 //  Raycasting
 t_v3f	raycast(t_windata *windata, double angle);
@@ -135,16 +137,6 @@ void	draw_minimap_ray(t_windata *windata, t_v3f rayInter);
 //  Settings
 void	update_settings(t_windata	*windata);
 
-
-
-// -------
-char	**copy_array(char **arr);
-int		get_start_map(char **map);
-
-// check.c
-int		check_map_closed(t_map map, char **bmap);
-int		check_chars(char **map);
-int		check_color(char *line, char **color);
 
 // in map_utils.c
 bool	ends_with(char *s1, char *s2);

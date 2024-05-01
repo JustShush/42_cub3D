@@ -26,21 +26,6 @@ int	empty_line(char *line)
 	return (1);
 }
 
-int	get_start_map(char **map)
-{
-	int	i;
-
-	i = 0;
-	while (map[i])
-		i++;
-	i--;
-	while (i > 0 && empty_line(map[i]) == 1)
-		i--;
-	while (i > 0 && empty_line(map[i]) == 0)
-		i--;
-	return (i);
-}
-
 enum e_type_identifier	line_matches_identifier(char *line)
 {
 	if (ft_strncmp(line, NORTH_TEXTURE_IDENTIFIER, 3) == 0)
@@ -65,7 +50,7 @@ bool	parse_identifier(t_map *map, char *line,
 
 	split = ft_split(line, ' ');
 	if (!split || !split[1] || split[2])
-		return (free_array(split), false);
+		return (pe(INVALID_IDENTIFIER), free_array(split), false);
 	if (identifier == NORTH_TEXTURE || identifier == SOUTH_TEXTURE
 		|| identifier == WEST_TEXTURE || identifier == EAST_TEXTURE)
 	{
@@ -105,4 +90,32 @@ bool	ends_with(char *s1, char *s2)
 		j--;
 	}
 	return (true);
+}
+
+char *sanitize_file_line(char *line)
+{
+	char	*trimmed;
+	int		i;
+	int		j;
+
+	if (!line)
+		return (NULL);
+	trimmed = malloc(sizeof(char) * (ft_strlen(line) + 1));
+	if (!trimmed)
+		return (pe(MALLOC_ERROR), NULL);
+	ft_memset(trimmed, 0, sizeof(char) * (ft_strlen(line) + 1));
+	i = 0;
+	j = 0;
+	while (line && line[i])
+	{
+		if (line[i] == '\t')
+			trimmed[j] = ' ';
+		else if (line[i] == '\n')
+			trimmed[j] = '\0';
+		else
+			trimmed[j] = line[i];
+		j++;
+		i++;
+	}
+	return (trimmed);
 }

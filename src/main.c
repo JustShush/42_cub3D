@@ -6,62 +6,19 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/30 21:27:06 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:51:47 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-void	printMap(char **map) {
-	if (map == NULL) {
-		printf("map is NULL\n");
-		return ;
-	}
-	for (int i = 0; map[i] != NULL; i++) {
-		printf("%s\n",  map[i]);
-	}
-}
-
 bool	init(t_windata *data)
 {
-	// check valid map name (ends with ext .cub) and exists in the fs
 	if (!ends_with(data->smap.filename, MAP_EXT))
 		return (pe(INVALID_MAP_EXT), false);
 	if (!map_init(&data->smap))
 		return (free_map(&data->smap, data->mlx), false);
-
-	int i = 0;// print tilemap
-	int j = 0;
-	printf("---TILEMAP---\n");
-	while (i < data->smap.tilemap.size.y)
-	{
-		j = 0;
-		while (j < data->smap.tilemap.size.x)
-		{
-			if (data->smap.tilemap.map[i][j] == -1)
-				printf("-");
-			else if (data->smap.tilemap.map[i][j] == 0)
-				printf("0");
-			else
-				printf("1");
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-
 	return (true);
-}
-
-int	check_map(t_map map)
-{
-	if (check_map_closed(map, map.file))
-		return (1);
-	else if (check_chars(map.file))
-		return (1);
-	/*else if (check_valid_color(map.textures))
-		return (1);*/
-	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -71,11 +28,13 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (pe(INVALID_ARGS), -1);
 	ft_memset(&data, 0, sizeof(t_windata));
-	data.smap.tilemap.map = NULL;
+	data.smap.tilemap = (t_tilemap){0};
 	data.smap.filename = argv[1]; // ..............................
 	if (!init(&data))
 		exit(EXIT_FAILURE);
-	data.player = (t_player){v2_to_v2f(data.smap.player_pos), - PI / 2, PI / 2};// TODO: set rotation depending on the map char dir
+	if (!player_init(&data.player, v2_to_v2f(data.smap.player_pos), data.smap.player_dir))
+		exit(EXIT_FAILURE);
+	//data.player = (t_player){v2_to_v2f(data.smap.player_pos), - PI / 2, PI / 2};// TODO: set rotation depending on the map char dir
 	//printf("Player pos: %d, %d\n", data.player.pos.x, data.player.pos.y);
 	update_settings(&data);
 	data.mlx = mlx_init();
@@ -84,23 +43,15 @@ int	main(int argc, char **argv)
 	if (!load_sprites(data.mlx, &data.smap.sprites))
 		close_win(&data);
 	init_event_handlers(&data);
-	/*if (check_map(data.smap))
-		return (printf("here\n"), -1);*/
-	// buffer logic
 	data.win_buffer.img = mlx_new_image(data.mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data.win_buffer.img)
 	{
-		fprintf(stderr, "Failed to allocate memory for image\n");
+		pe("Failed to allocate memory for image\n");
 		exit(EXIT_FAILURE);
 	}
 	data.win_buffer.addr = mlx_get_data_addr(data.win_buffer.img,
 			&data.win_buffer.bits_per_pixel, &data.win_buffer.line_length,
 			&data.win_buffer.endian);
-	if (!data.win_buffer.addr)
-	{
-		fprintf(stderr, "Failed to get image address\n");
-		exit(EXIT_FAILURE);
-	}
 	drawMapToScreen(&data);
 	mlx_loop(data.mlx);
 	free(data.mlx);
@@ -143,7 +94,7 @@ void	draw_vertical_line(t_windata *windata, int x, int top, int bottom,
 		if (pixel_index >= line_length * WIN_HEIGHT)
 		{
 			// the code should never get here!
-			fprintf(stderr, "Pixel index out of bounds\n");
+			pe("Pixel index out of bounds\n");
 			break ;
 		}
 		if (img_data[pixel_index] != 0)

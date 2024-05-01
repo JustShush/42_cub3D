@@ -29,15 +29,19 @@ void	free_map(t_map *map, void *mlx)
 {
 	int	i;
 
-	i = 0;
 	free_array(map->file);
 	map->file = NULL;
 	unload_sprites(mlx, &map->sprites);
 	if (map->tilemap.map && map->tilemap.size.x > 0)
 	{
-		while (map->tilemap.map && map->tilemap.map[i])
-			free(map->tilemap.map[i++]);
+		i = 0;
+		while (map->tilemap.map && i < map->tilemap.size.y
+				&& map->tilemap.map[i] != NULL)
+		{
+			free(map->tilemap.map[i]);
+			i++;
+		}
 		free(map->tilemap.map);
+		map->tilemap.map = NULL;
 	}
-	map->tilemap.map = NULL;
 }

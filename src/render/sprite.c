@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:41:37 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/30 19:35:25 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:52:07 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	*load_sprite(void *mlx, char *filename)
 
 	width = 0;
 	height = 0;
-	printf("loading sprite %s\n", filename);
+	//printf("loading sprite %s\n", filename);
 	sprite = mlx_xpm_file_to_image(mlx, filename, &width, &height);
 	if (!sprite)
 		return (pe(ERROR_LOAD_WALL), NULL);

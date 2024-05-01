@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 16:58:19 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/30 20:10:06 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:24:51 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ bool	parse_wall_texture(t_map *map, char *filename,
 	int			fd;
 	t_sprite	*sprite;
 
+	if (!ends_with(filename, IMG_FORMAT_EXT))
+		return (pe(INVALID_SPRITE_EXT), false);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (pe(WALL_TEXTURE_NOT_FOUND), false);

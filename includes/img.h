@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:31:23 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/30 19:35:41 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:25:08 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 // Available image sizes 64 / 128
 # define IMG_SIZE 64
 # define SPRITES_DIR "sprites/"
+# define IMG_FORMAT_EXT ".xpm"
 
 # define WALL_PATH "rock_wall.xpm"
 # define FLOOR_PATH "wood_floor.xpm"
@@ -24,6 +25,7 @@
 # define ERROR_LOAD_WALL "Failed to load wall sprite\n"
 # define ERROR_LOAD_FLOOR "Failed to load floor sprite\n"
 # define ERROR_IMG_SIZE "Invalid sprite size\n"
+# define INVALID_SPRITE_EXT "Invalid sprite format\n"
 
 # include <stdbool.h>
 # include <vecs.h>

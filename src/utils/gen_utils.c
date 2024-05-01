@@ -49,6 +49,7 @@ bool	only_digits(char *str)
 // print error to stderr
 void	pe(char *msg)
 {
+	ft_putstr_fd("Error\n", STDERR_FILENO);
 	ft_putstr_fd(msg, STDERR_FILENO);
 }
 

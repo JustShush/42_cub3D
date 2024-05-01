@@ -6,14 +6,14 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 15:14:37 by dimarque          #+#    #+#             */
-/*   Updated: 2024/04/30 20:47:13 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:52:04 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
 // TODO: change return type to bool
-int	readmap(t_map *map)
+bool	readmap(t_map *map)
 {
 	int		fd;
 	int		i;
@@ -38,36 +38,14 @@ int	readmap(t_map *map)
 			map->file[i] = ft_strtrim(line, "\n\t");/* do not remove spaces */
 		free(line);
 		if (!map->file[i])
-			return (pe(MALLOC_ERROR), 1);
-		printf("map[%d]:|%s|\n", i, map->file[i]);
+			return (pe(MALLOC_ERROR), false);
+		//printf("map[%d]:|%s|\n", i, map->file[i]);
 		i++;
 		line = get_next_line(fd);
 	}
 	map->file[i] = NULL;
 	close(fd);
-	return (0);
-}
-
-int	numberoflines(char *file)
-{
-	int		fd;
-	int		i;
-	char	*line;
-
-	i = 0;
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return (0);
-	line = get_next_line(fd);
-	while (line)
-	{
-		i++;
-		free(line);
-		line = get_next_line(fd);
-	}
-	free(line);
-	close(fd);
-	return (i);
+	return (true);
 }
 
 
@@ -75,14 +53,14 @@ bool	map_init(t_map	*map)
 {
 	if (!calc_map_size(map))
 		return (pe(MAP_NOT_FOUND), false);
-	printf("map size: %d %d\n", map->size.x, map->size.y);
+	//("map size: %d %d\n", map->size.x, map->size.y);
 	if (map->size.x < 3 || map->size.y < 8)
 		return (pe(INVALID_MAP), false);
 	map->file = malloc(sizeof(char *) * (map->size.y + 1));
 	if (!map->file)
 		return (pe(MALLOC_ERROR), false);
 	ft_memset(map->file, 0, sizeof(char *) * (map->size.y + 1));
-	if (readmap(map))
+	if (!readmap(map))
 		return (false);
 	if (!parse_map_file(map))
 		return (false);
@@ -112,12 +90,12 @@ bool	parse_map_file_textures(t_map *map)
 
 bool	handle_tilemap_char(t_map *map, int i, int j)
 {
-	//printf("handle_tilemap_char:%c|\n", map->file[i][j]);
+
 	if (map->file[i][j] == ' ')
 		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = -1;
 	else if (char_in_set(map->file[i][j], PLAYER_DIRS))
 	{
-		printf("player_dir:%c\n", map->file[i][j]);
+		//printf("player_dir:%c\n", map->file[i][j]);
 		if (char_in_set(map->player_dir, PLAYER_DIRS))
 			return (pe(MULTIPLE_PLAYERS), false);
 		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = 0;
@@ -148,6 +126,8 @@ bool	parse_map_file_tilemap(t_map *map)
 		}
 		i++;
 	}
+	if (!char_in_set(map->player_dir, PLAYER_DIRS))
+		return (pe(PLAYER_NOT_FOUND), false);
 	return (true);
 }
 
@@ -161,19 +141,21 @@ bool	parse_map_file(t_map *map)
 		return (false);
 	if (!calculate_tilemap_size(map))
 		return (false);
-	map->tilemap.map = malloc(sizeof(int *) * map->tilemap.size.y + 1);
+	map->tilemap.map = malloc(sizeof(int *) * (map->tilemap.size.y + 1));
 	if (!map->tilemap.map)
 		return (pe(MALLOC_ERROR), false);
 	i = 0;
 	while (i < map->tilemap.size.y)
 	{
-		map->tilemap.map[i] = malloc(sizeof(int) * map->tilemap.size.x + 1);
+		map->tilemap.map[i] = malloc(sizeof(int) * map->tilemap.size.x);
 		if (!map->tilemap.map[i])
 			return (pe(MALLOC_ERROR), false);
-		ft_memset(map->tilemap.map[i], -1, sizeof(int) * map->tilemap.size.x + 1);
+		ft_memset(map->tilemap.map[i], -1, sizeof(int) * map->tilemap.size.x);
 		i++;
 	}
 	if (!parse_map_file_tilemap(map))
+		return (false);
+	if (!check_map_closed(map))
 		return (false);
 	return (true);
 }
@@ -222,6 +204,8 @@ bool	calculate_tilemap_size(t_map *map)
 			map->tilemap.size.x = ft_strlen(map->file[i]);
 		i++;
 	}
-	printf("tilemap size: %d %d\n", map->tilemap.size.x, map->tilemap.size.y);
+	//printf("tilemap size: %d %d\n", map->tilemap.size.x, map->tilemap.size.y);
+	if (map->tilemap.size.x > TILEMAP_MAX_WIDTH || map->tilemap.size.y > TILEMAP_MAX_HEIGHT)
+		return (pe(INVALID_TILEMAP_SIZE), false);
 	return (true);
 }

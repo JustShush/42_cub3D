@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/30 21:08:10 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 17:18:43 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static int	handle_close(t_windata *windata)
 
 static int	key_press(int keycode, t_windata *windata)
 {
-	(void)windata;
 	bool	moved;
 
 	moved = false;
@@ -61,9 +60,11 @@ static int	key_press(int keycode, t_windata *windata)
 
 void	close_win(t_windata *windata)
 {
+	free_map(&windata->smap, windata->mlx);
+	if (windata->win_buffer.img)
+		mlx_destroy_image(windata->mlx, windata->win_buffer.img);
 	mlx_destroy_window(windata->mlx, windata->mlx_win);
 	mlx_destroy_display(windata->mlx);
-	free_map(&windata->smap, windata->mlx);
 	free(windata->mlx);
 	exit(EXIT_SUCCESS);
 }

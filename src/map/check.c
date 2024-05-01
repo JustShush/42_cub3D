@@ -12,96 +12,56 @@
 
 #include <cub3d.h>
 
-int	check_map_closed(t_map map, char **bmap)
+bool	check_map_closed(t_map *map)
 {
 	int		i;
-	//int		j;
-	char	**copy;
-	(void)map;
+	int		j;
 
-	//j = 0;
-	i = get_start_map(bmap);
-	copy = copy_array(bmap);
-	if (i + 1 < 0 || !bmap[i + 1] || first_str(bmap[i + 1], "1"))
-	{
-		free_array(copy);
-		return (1);
-	}
-	//if (support_check_map(copy, i, j, map) == 1)
-	//	return (1);
-	free_array(copy);
-	return (0);
-}
-
-int	check_chars(char **map)
-{
-	int	i;
-	int	j;
-	int	check;
-
-	i = get_start_map(map);
-	check = 0;
-	while (map[i])
+	i = 0;
+	while (map->tilemap.map && i < map->tilemap.size.y && map->tilemap.map[i])
 	{
 		j = 0;
-		while (map[i][j])
+		while (j < map->tilemap.size.x)
 		{
-			if ((map[i][j] == 'W' || map[i][j] == 'E'
-				|| map[i][j] == 'N' || map[i][j] == 'S'))
-				check++;
-			else if (map[i][j] != '1' && map[i][j] != '0'
-				&& map[i][j] != '\n' && map[i][j] != ' ' && map[i][j] != '\t')
-				return (printf(
-						"Error\nInvalid character found\n"));
+			if (map->tilemap.map[i][j] != 0)
+			{
+				j++;
+				continue ;
+			}
+			if (!check_map_tile(map, (t_v2){j, i}))
+				return (pe(MAP_NOT_CLOSED), false);
 			j++;
 		}
 		i++;
 	}
-	if (check != 1)
-		return (printf("Error\nWrong player count\n"));
-	return (1);
+	return (true);
 }
 
-/*int	check_valid_color(t_textures textures)
+bool	check_map_tile(t_map *map, t_v2 pos)
 {
-	if (textures.c->r > 255 || textures.c->r < 0)
-		return (printf("Error\nInvalid color\n"));
-	if (textures.c->g > 255 || textures.c->g < 0)
-		return (printf("Error\nInvalid color\n"));
-	if (textures.c->b > 255 || textures.c->b < 0)
-		return (printf("Error\nInvalid color\n"));
-	if (textures.f->r > 255 || textures.f->r < 0)
-		return (printf("Error\nInvalid color\n"));
-	if (textures.f->g > 255 || textures.f->g < 0)
-		return (printf("Error\nInvalid color\n"));
-	if (textures.f->b > 255 || textures.f->b < 0)
-		return (printf("Error\nInvalid color\n"));
-	return (0);
-}*/
+	if (pos.x < 0 || pos.y < 0)
+		return (false);
+	if (pos.y >= map->tilemap.size.y || pos.x >= map->tilemap.size.x)
+		return (false);
+	if (!check_map_tile_value(&map->tilemap, (t_v2){pos.x, pos.y - 1}))
+		return (false);
+	if (!check_map_tile_value(&map->tilemap, (t_v2){pos.x, pos.y + 1}))
+		return (false);
+	if (!check_map_tile_value(&map->tilemap, (t_v2){pos.x + 1, pos.y}))
+		return (false);
+	if (!check_map_tile_value(&map->tilemap, (t_v2){pos.x - 1, pos.y}))
+		return (false);
+	return (true);
+}
 
-int	check_color(char *line, char **color)
+bool	check_map_tile_value(t_tilemap *tilemap, t_v2 pos)
 {
-	int	i;
-	int	j;
+	int	value;
 
-	i = 0;
-	j = 0;
-	while (i < 3)
-	{
-		if (color[i] == NULL)
-			return (0);
-		i++;
-	}
-	i = 0;
-	while (line[i] != '\0')
-	{
-		if (line[i] == ',')
-			j++;
-		if ((line[i] > '9' || line[i] < '0') && line[i] != ',')
-			return (0);
-		i++;
-	}
-	if (j != 2)
-		return (0);
-	return (1);
+	if (pos.y < 0 || pos.x < 0
+		|| pos.y >= tilemap->size.y
+		|| pos.x >= tilemap->size.x)
+		return (false);
+	value = tilemap->map[pos.y][pos.x];
+	return (!(value == -1));
 }
