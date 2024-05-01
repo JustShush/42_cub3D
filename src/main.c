@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:21:43 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:44:36 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,11 +128,6 @@ void	drawScreen(t_windata *windata)
 
 	angle = windata->player.angle - windata->player.fov / 2;
 	i = 0;
-#ifdef PROFILER
-	clock_t start, end;
-	double cpu_time_used;
-	start = clock();
-#endif
 	while (angle < windata->player.angle + windata->player.fov / 2)
 	{
 		ray = raycast(windata, angle);
@@ -150,12 +145,5 @@ void	drawScreen(t_windata *windata)
 		angle += windata->settings.ray_increment;
 		i++;
 	}
-#ifdef PROFILER
-	end = clock();
-
-	// Calculate the time taken
-	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC * 1000.0;
-	printf("Time taken: %fms\n", cpu_time_used);
-#endif
 }
 

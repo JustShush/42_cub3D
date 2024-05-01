@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:31:03 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:44:39 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,6 @@
 // ERRORS
 # define MALLOC_ERROR "Malloc failed\n"
 # define INVALID_ARGS "Invalid arguments\nUsage: ./cub3d <map>\n"
-
-//# define PROFILER
-# ifdef PROFILER
-#  include <time.h>
-# endif
 
 enum	e_player_direction
 {
