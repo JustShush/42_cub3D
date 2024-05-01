@@ -6,13 +6,13 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 18:15:03 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 18:25:45 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:34:21 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-bool	move_player(t_player *player, enum e_player_direction dir)
+bool	move_player(t_player *player, t_tilemap *tilemap, enum e_player_direction dir)
 {
 	t_v2f	new_pos;
 	t_v2f	vdir;
@@ -29,6 +29,10 @@ bool	move_player(t_player *player, enum e_player_direction dir)
 	else
 		return (false);
 	new_pos = v2fadd(player->pos, vdir);
+	if (new_pos.x < 0 || new_pos.y < 0 || new_pos.x >= tilemap->size.x || new_pos.y >= tilemap->size.y)
+		return (false);
+	if (tilemap->map[(int)new_pos.y][(int)new_pos.x] == 1 || tilemap->map[(int)new_pos.y][(int)new_pos.x] == -1)
+		return (false);
 	player->pos = new_pos;
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:41:37 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:01:12 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:37:10 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,11 @@ t_imgbuffer	load_sprite(void *mlx, char *filename)
 	if (!sprite.img)
 		return (pe(ERROR_LOAD_SPRITE), sprite);
 	if (width != IMG_SIZE || height != IMG_SIZE)
+	{
+		mlx_destroy_image(mlx, sprite.img);
+		sprite.img = NULL;
 		return (pe(ERROR_IMG_SIZE), sprite);
+	}
 	sprite.addr = mlx_get_data_addr(sprite.img, 
 			&sprite.bits_per_pixel,
 			&sprite.line_length,
