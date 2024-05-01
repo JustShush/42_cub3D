@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:24:10 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:31:03 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void	clear_window(t_windata *windata);
 void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites);
 
 //  Player
-bool	move_player(t_player *player, enum e_player_direction dir);
+bool	move_player(t_player *player, t_tilemap *tilemap, enum e_player_direction dir);
 bool	rotate_player(t_player *player, enum e_player_direction dir);
 bool	player_zoom(t_player *player, double zoom);
 bool	player_set_direction(t_player *player, char player_dir);
