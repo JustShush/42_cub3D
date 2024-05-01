@@ -1,16 +1,87 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_parser.c                                       :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 16:58:19 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 17:24:51 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:16:20 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
+
+bool	parse_map_file(t_map *map)
+{
+	int	i;
+
+	map->sprites.ceiling = -1;
+	map->sprites.floor = -1;
+	if (!parse_map_file_textures(map))
+		return (false);
+	if (!calculate_tilemap_size(map))
+		return (false);
+	map->tilemap.map = malloc(sizeof(int *) * (map->tilemap.size.y + 1));
+	if (!map->tilemap.map)
+		return (pe(MALLOC_ERROR), false);
+	i = 0;
+	while (i < map->tilemap.size.y)
+	{
+		map->tilemap.map[i] = malloc(sizeof(int) * map->tilemap.size.x);
+		if (!map->tilemap.map[i])
+			return (pe(MALLOC_ERROR), false);
+		ft_memset(map->tilemap.map[i], -1, sizeof(int) * map->tilemap.size.x);
+		i++;
+	}
+	if (!parse_map_file_tilemap(map))
+		return (false);
+	if (!check_map_closed(map))
+		return (false);
+	return (true);
+}
+
+bool	parse_map_file_textures(t_map *map)
+{
+	enum e_type_identifier	identifier;
+	int						i;
+
+	i = 0;
+	while (i < TILEMAP_FIRST_INDEX && i < map->size.y)
+	{
+		identifier = line_matches_identifier(map->file[i]);
+		if (identifier == INVALID)
+			return (pe(INVALID_IDENTIFIER), false);
+		if (!parse_identifier(map, map->file[i], identifier))
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+bool	parse_map_file_tilemap(t_map *map)
+{
+	int		i;
+	int		j;
+
+	i = TILEMAP_FIRST_INDEX;
+	while (map->file[i])
+	{
+		j = 0;
+		while (j < map->tilemap.size.x && map->file[i][j])
+		{
+			if (!char_in_set(map->file[i][j], TILEMAP_VALID_CHARS))
+				return (pe(INVALID_TILEMAP_CHAR), false);
+			if (!handle_tilemap_char(map, i, j))
+				return (false);
+			j++;
+		}
+		i++;
+	}
+	if (!char_in_set(map->player_dir, PLAYER_DIRS))
+		return (pe(PLAYER_NOT_FOUND), false);
+	return (true);
+}
 
 bool	parse_wall_texture(t_map *map, char *filename,
 		enum e_type_identifier identifier)
@@ -38,7 +109,6 @@ bool	parse_wall_texture(t_map *map, char *filename,
 	return (true);
 }
 
-/* TODO: handle mem leaks for split */
 bool	parse_color(t_map *map, char *color, enum e_type_identifier identifier)
 {
 	char	**colors;

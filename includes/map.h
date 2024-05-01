@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 15:17:02 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 17:46:34 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:16:46 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,25 +75,30 @@ typedef struct t_map
 }	t_map;
 
 // Map
-bool			map_init(t_map	*map);
-bool			calc_map_size(t_map *map);
-bool			parse_map_file(t_map *map);
-unsigned int	create_color(int r, int g, int b);
-bool			calculate_tilemap_size(t_map *map);
+bool					map_init(t_map	*map);
+bool					readmap(t_map *map);
+bool					calc_map_size(t_map *map);
+bool					calculate_tilemap_size(t_map *map);
 
-bool	check_map_closed(t_map *map);
-bool	check_map_tile(t_map *map, t_v2 pos);
-bool	check_map_tile_value(t_tilemap *tilemap, t_v2 pos);
+// Map Parser
+bool					parse_map_file(t_map *map);
+bool					parse_map_file_textures(t_map *map);
+bool					parse_map_file_tilemap(t_map *map);
+bool					parse_wall_texture(t_map *map, char *filename,
+							enum e_type_identifier identifier);
+bool					parse_color(t_map *map, char *color,
+							enum e_type_identifier identifier);
 
-// map_parser
-bool			parse_color(t_map *map, char *color, enum e_type_identifier identifier);
-bool			parse_wall_texture(t_map *map, char *filename, enum e_type_identifier identifier);
-
-// map utils
+// Map Identifiers
 enum e_type_identifier	line_matches_identifier(char *line);
-bool	parse_identifier(t_map *map, char *line, enum e_type_identifier identifier);
+bool					parse_identifier(t_map *map, char *line,
+							enum e_type_identifier identifier);
+bool					handle_tilemap_char(t_map *map, int i, int j);
+unsigned int			create_color(int r, int g, int b);
 
-bool				readmap(t_map *map);
-
+// Map Check
+bool					check_map_closed(t_map *map);
+bool					check_map_tile(t_map *map, t_v2 pos);
+bool					check_map_tile_value(t_tilemap *tilemap, t_v2 pos);
 
 #endif

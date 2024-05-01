@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:58:21 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:04:39 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos)
 	*(unsigned int *)dst = color;
 }
 
+// Draws a rectangle of a given size and color
 void	rect(t_windata *windata, int color, t_v2 start, int size)
 {
 	int	i;
@@ -91,6 +92,7 @@ void	rect(t_windata *windata, int color, t_v2 start, int size)
 	}
 }
 
+// Resets the buffer to the ceiling and floor colors
 void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites)
 {
 	int	pixel_index;

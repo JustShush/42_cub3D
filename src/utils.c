@@ -1,50 +1,73 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 14:56:07 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 18:31:49 by tiagoliv         ###   ########.fr       */
+/*   Created: 2024/04/25 13:53:42 by dimarque          #+#    #+#             */
+/*   Updated: 2024/04/25 13:53:42 by dimarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-int	darken_color(int hexColor, double blendFactor)
+bool	char_in_set(char c, char *set)
 {
-	int	r;
-	int	g;
-	int	b;
-
-	if (blendFactor < 0)
-		blendFactor = 0;
-	if (blendFactor > 1)
-		blendFactor = 1;
-	r = (hexColor >> 16) & 0xFF;
-	g = (hexColor >> 8) & 0xFF;
-	b = hexColor & 0xFF;
-	return (((int)((1 - blendFactor) * r) << 16)
-			| ((int)((1 - blendFactor) * g) << 8)
-			| (int)((1 - blendFactor) * b));
+	while (*set)
+	{
+		if (*set == c)
+			return (true);
+		set++;
+	}
+	return (false);
 }
 
-double	map_number(double x, t_v2f in, t_v2f out)
+bool	only_digits(char *str)
 {
-	return (out.x + (x - in.x) * (out.y - out.x) / (in.y - in.x));
+	while (*str)
+	{
+		if (!ft_isdigit(*str))
+			return (false);
+		str++;
+	}
+	return (true);
 }
 
-t_imgbuffer	get_sprite_by_side(t_sprites *sprites, enum e_ray_side side)
+// print error to stderr
+void	pe(char *msg)
 {
-	if (side == NORTH)
-		return (sprites->north.img);
-	else if (side == SOUTH)
-		return (sprites->south.img);
-	else if (side == EAST)
-		return (sprites->east.img);
-	else if (side == WEST)
-		return (sprites->west.img);
-	return (sprites->north.img);
+	ft_putstr_fd("Error\n", STDERR_FILENO);
+	ft_putstr_fd(msg, STDERR_FILENO);
 }
 
+int	empty_line(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+bool	ends_with(char *s1, char *s2)
+{
+	int	i;
+	int	j;
+
+	i = ft_strlen(s1) - 1;
+	j = ft_strlen(s2) - 1;
+	while (j >= 0)
+	{
+		if (s1[i] != s2[j])
+			return (false);
+		i--;
+		j--;
+	}
+	return (true);
+}

@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:51:43 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 21:42:12 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,10 @@ void				pixel_to_buffer(t_windata *windata, int color, t_v2 pos);
 void				rect(t_windata *windata, int color, t_v2 start, int size);
 void				reset_buffer(t_imgbuffer *buffer, t_sprites *sprites);
 
+// 		\	sprites_utils.c
+t_imgbuffer			get_sprite_by_side(t_sprites *sprites,
+						enum e_ray_side side);
+
 //  Player
 bool				move_player(t_player *player, t_tilemap *tilemap,
 						enum e_player_direction dir);
@@ -140,23 +144,16 @@ void				draw_minimap_rays(t_windata *windata);
 //  Settings
 void				update_settings(t_windata *windata);
 
-//  Utils
-int					darken_color(int hexColor, double blendFactor);
-double				map_number(double x, t_v2f in, t_v2f out);
-t_imgbuffer			get_sprite_by_side(t_sprites *sprites,
-						enum e_ray_side side);
-
-// in map_utils.c
-bool				ends_with(char *s1, char *s2);
-
-// gen_utils.c
-int					first_str(char *s1, char *s2);
+// Utils.c
 bool				char_in_set(char c, char *set);
 bool				only_digits(char *str);
 void				pe(char *msg);
-void				pe_msg(char *err, char *msg);
-
 int					empty_line(char *line);
+bool				ends_with(char *s1, char *s2);
+
+// Utils2.c
+
+int					this_or_that(bool condition, int this, int that);
 
 // frees
 void				free_array(char **arr);

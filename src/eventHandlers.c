@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:48:28 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:45:59 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:31:58 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,12 @@ void	init_event_handlers(t_windata *windata)
 	mlx_hook(windata->mlx_win, KeyPress, KeyPressMask, key_press, windata);
 	mlx_hook(windata->mlx_win, DestroyNotify, KeyPressMask, handle_close,
 		windata);
-	mlx_hook(windata->mlx_win, MotionNotify, PointerMotionMask, mouse_move, (void*) windata);
+	mlx_hook(windata->mlx_win, MotionNotify, PointerMotionMask, mouse_move,
+		windata);
 }
 
 static int	handle_close(t_windata *windata)
 {
-	/*unload_sprites(windata->mlx, &windata->smap.sprites);
-	mlx_destroy_image(windata->mlx, windata->win_buffer.img);*/
 	close_win(windata);
 	return (0);
 }
@@ -54,15 +53,18 @@ static int	key_press(int keycode, t_windata *windata)
 
 static int	mouse_move(int x, int y, t_windata *windata)
 {
+	int		delta_x;
+	double	sensitivity;
+
 	(void)y;
-	if (windata->player.mouse_x != -1) {
-        int delta_x = x - windata->player.mouse_x;
-        double sensitivity = 0.005;
-	
+	if (windata->player.mouse_x != -1)
+	{
+		delta_x = x - windata->player.mouse_x;
+		sensitivity = 0.005;
 		windata->player.angle += delta_x * sensitivity;
-        windata->player.angle = fmod(windata->player.angle, 2 * PI);
-    }
-    windata->player.mouse_x = x;
+		windata->player.angle = fmod(windata->player.angle, 2 * PI);
+	}
+	windata->player.mouse_x = x;
 	return (0);
 }
 

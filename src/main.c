@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:44:36 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:18:23 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ int	main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	if (!player_init(&data.player, v2_to_v2f(data.smap.player_pos), data.smap.player_dir))
 		exit(EXIT_FAILURE);
-	//data.player = (t_player){v2_to_v2f(data.smap.player_pos),  PI / 2, PI / 2, -1};// TODO: set rotation depending on the map char dir
-	//printf("Player pos: %d, %d\n", data.player.pos.x, data.player.pos.y);
 	gettimeofday(&data.frame_control.last_update, NULL);  // Get current time
 	data.frame_control.frame_delay = 1000.0 / 60.0;  // For 60 FPS, 1000 ms / 60
 	update_settings(&data);
