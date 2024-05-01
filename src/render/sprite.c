@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:41:37 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 17:52:07 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:01:12 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,58 +16,58 @@
 bool	load_sprites(void *mlx, t_sprites *sprites)
 {
 	sprites->north.img = load_sprite(mlx, sprites->north.filename);
-	if (!sprites->north.img)
+	if (!sprites->north.img.img)
 		return (false);
 	sprites->south.img = load_sprite(mlx, sprites->south.filename);
-	if (!sprites->south.img)
+	if (!sprites->south.img.img)
 		return (false);
 	sprites->west.img = load_sprite(mlx, sprites->west.filename);
-	if (!sprites->west.img)
+	if (!sprites->west.img.img)
 		return (false);
 	sprites->east.img = load_sprite(mlx, sprites->east.filename);
-	if (!sprites->east.img)
+	if (!sprites->east.img.img)
 		return (false);
 	return (true);
 }
 
-void	draw_sprite(void *mlx, void *mlx_win, t_v2 pos, void *sprite)
-{
-	mlx_put_image_to_window(mlx, mlx_win, sprite, pos.x, pos.y);
-}
-
 void	unload_sprites(void *mlx, t_sprites *sprites)
 {
-	if (sprites->north.img)
-		mlx_destroy_image(mlx, sprites->north.img);
+	if (sprites->north.img.img)
+		mlx_destroy_image(mlx, sprites->north.img.img);
 	if (sprites->north.filename)
 		free(sprites->north.filename);
-	if (sprites->south.img)
-		mlx_destroy_image(mlx, sprites->south.img);
+	if (sprites->south.img.img)
+		mlx_destroy_image(mlx, sprites->south.img.img);
 	if (sprites->south.filename)
 		free(sprites->south.filename);
-	if (sprites->west.img)
-		mlx_destroy_image(mlx, sprites->west.img);
+	if (sprites->west.img.img)
+		mlx_destroy_image(mlx, sprites->west.img.img);
 	if (sprites->west.filename)
 		free(sprites->west.filename);
-	if (sprites->east.img)
-		mlx_destroy_image(mlx, sprites->east.img);
+	if (sprites->east.img.img)
+		mlx_destroy_image(mlx, sprites->east.img.img);
 	if (sprites->east.filename)
 		free(sprites->east.filename);
 }
 
-void	*load_sprite(void *mlx, char *filename)
+t_imgbuffer	load_sprite(void *mlx, char *filename)
 {
-	int		width;
-	int		height;
-	void	*sprite;
+	t_imgbuffer	sprite;
+	int			width;	
+	int			height;
 
+	ft_memset(&sprite, 0, sizeof(t_imgbuffer));
 	width = 0;
 	height = 0;
-	//printf("loading sprite %s\n", filename);
-	sprite = mlx_xpm_file_to_image(mlx, filename, &width, &height);
-	if (!sprite)
-		return (pe(ERROR_LOAD_WALL), NULL);
+	sprite.img = mlx_xpm_file_to_image(mlx, filename, &width, &height);
+	if (!sprite.img)
+		return (pe(ERROR_LOAD_SPRITE), sprite);
 	if (width != IMG_SIZE || height != IMG_SIZE)
-		return (pe(ERROR_IMG_SIZE), NULL);
+		return (pe(ERROR_IMG_SIZE), sprite);
+	sprite.addr = mlx_get_data_addr(sprite.img, 
+			&sprite.bits_per_pixel,
+			&sprite.line_length,
+			&sprite.endian);
 	return (sprite);
 }
+

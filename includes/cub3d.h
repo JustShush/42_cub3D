@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 17:21:01 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:24:10 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stddef.h>
+# include <sys/time.h>
 
 # include <mlx.h>
 # include <libft.h>
@@ -64,21 +65,28 @@ enum	e_player_direction
 	RIGHT
 };
 
+enum	e_ray_side
+{
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST
+};
+
+typedef struct t_ray
+{
+	t_v2f				hit_pos;
+	double				dist;
+	enum	e_ray_side	side;
+}	t_ray;
+
 typedef struct t_player
 {
 	t_v2f	pos;
 	double	angle;
 	double	fov;
+	int		mouse_x;
 }	t_player;
-
-typedef struct t_imgbuffer
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}	t_imgbuffer;
 
 typedef struct t_minimap
 {
@@ -93,15 +101,21 @@ typedef struct t_settings
 	double	ray_increment;
 }	t_settings;
 
+typedef struct s_frame_control {
+    struct timeval last_update;
+    float frame_delay;
+} t_frame_control;
+
 typedef struct t_windata
 {
-	void		*mlx;
-	void		*mlx_win;
-	t_imgbuffer	win_buffer;
-	t_minimap	minimap;
-	t_player	player;
-	t_settings	settings;
-	t_map		smap;
+	void			*mlx;
+	void			*mlx_win;
+	t_imgbuffer		win_buffer;
+	t_minimap		minimap;
+	t_player		player;
+	t_settings		settings;
+	t_map			smap;
+	t_frame_control frame_control;
 }	t_windata;
 
 void	drawMapToScreen(t_windata *windata);
@@ -128,14 +142,20 @@ bool	player_set_direction(t_player *player, char player_dir);
 bool	player_init(t_player *player, t_v2f pos, char player_dir);
 
 //  Raycasting
-t_v3f	raycast(t_windata *windata, double angle);
+t_ray	raycast(t_windata *windata, double angle);
 
 //  Minimap
 void	draw_minimap(t_windata *windata);
-void	draw_minimap_ray(t_windata *windata, t_v3f rayInter);
+void	draw_minimap_ray(t_windata *windata, t_v2f rayInter);
+void	draw_minimap_rays(t_windata *windata);
 
 //  Settings
 void	update_settings(t_windata	*windata);
+
+//  Utils
+int		darken_color(int hexColor, double blendFactor);
+double	map_number(double x, t_v2f in, t_v2f out);
+t_imgbuffer	get_sprite_by_side(t_sprites *sprites, enum e_ray_side side);
 
 
 // in map_utils.c

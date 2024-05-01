@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 18:15:03 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 17:51:52 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 18:25:45 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@ bool	move_player(t_player *player, enum e_player_direction dir)
 		vdir = v2fmul_scalar(v2ffrom_angle(player->angle), -MOVEMENT_SPEED);
 	else if (dir == UP)
 		vdir = v2fmul_scalar(v2ffrom_angle(player->angle), +MOVEMENT_SPEED);
+	else if (dir == LEFT)
+		vdir = v2fmul_scalar(v2ffrom_angle(player->angle - PI / 2), MOVEMENT_SPEED);
+	else if (dir == RIGHT)
+		vdir = v2fmul_scalar(v2ffrom_angle(player->angle + PI / 2), MOVEMENT_SPEED);
 	else
 		return (false);
 	new_pos = v2fadd(player->pos, vdir);

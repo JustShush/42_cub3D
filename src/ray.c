@@ -6,13 +6,13 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:17:16 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 20:00:15 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 18:19:20 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-t_v3f	raycast(t_windata *windata, double angle)
+t_ray	raycast(t_windata *windata, double angle)
 {
 	t_v2f	dir = v2ffrom_angle(angle);
     t_v2f	rayStart = windata->player.pos;
@@ -38,6 +38,7 @@ t_v3f	raycast(t_windata *windata, double angle)
 	double	maxRaydist = windata->smap.tilemap.size.x * windata->smap.tilemap.size.y / 2;
 	double	dist = 0;
 	bool	hitWall = false;
+	enum e_ray_side side = EAST;
 	while (!hitWall && dist < maxRaydist)
 	{
 		if (vRayLength.x < vRayLength.y)
@@ -45,12 +46,14 @@ t_v3f	raycast(t_windata *windata, double angle)
 			mapCheck.x += vStep.x;
 			dist = vRayLength.x;
 			vRayLength.x += vRayUnitStepSize.x;
+			side = (dir.x < 0) ? WEST : EAST;
 		}
 		else
 		{
 			mapCheck.y += vStep.y;
 			dist = vRayLength.y;
 			vRayLength.y += vRayUnitStepSize.y;
+			side = (dir.y < 0) ? SOUTH : NORTH;
 		}
 		if (mapCheck.x >= 0 && mapCheck.y >= 0 && mapCheck.x < windata->smap.tilemap.size.x && mapCheck.y < windata->smap.tilemap.size.y)
 		{
@@ -59,7 +62,7 @@ t_v3f	raycast(t_windata *windata, double angle)
 		}
 	}
 
-	t_v3f	rayIntersection = (t_v3f){rayStart.x + dir.x * dist, rayStart.y + dir.y * dist, dist};
+	t_v2f	rayIntersection = (t_v2f){rayStart.x + dir.x * dist, rayStart.y + dir.y * dist};
 	//printf("Ray intersection: %f, %f\n", rayIntersection.x, rayIntersection.y);
-	return (rayIntersection);
+	return ((t_ray){rayIntersection, dist, side});
 }

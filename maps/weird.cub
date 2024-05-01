@@ -2,11 +2,11 @@ C 0,0,120
 
 
 
-    NO ./sprites/rock_wall.xpm
-SO ./sprites/rock_wall.xpm
+    NO ./sprites/wall_512.xpm
+SO ./sprites/wall2_512.xpm
 F 0,147,0
-WE ./sprites/rock_wall.xpm
-EA ./sprites/rock_wall.xpm
+WE ./sprites/wall3_512.xpm
+EA ./sprites/wall4_512.xpm
 
 
 

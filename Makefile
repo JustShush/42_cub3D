@@ -13,7 +13,7 @@ INCLUDES = -I $(includefolder) -I $(LIBFT_DIR) -I $(MLX_DIR)
 SRC_FOLDER = src/
 OBJ_DIR = obj/
 
-SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c minimap.c settings.c frees.c
+SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c minimap.c settings.c frees.c utils.c
 MAP_FILES = check.c map.c
 RENDER_FILES = draw.c sprite.c
 UTILS_FILES = gen_utils.c map_utils.c map_parser.c

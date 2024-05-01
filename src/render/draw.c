@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/29 19:54:13 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:19:18 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,21 @@ void	clear_window(t_windata *windata)
 
 void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites)
 {
-	/*ft_memset(buffer->addr, sprites->ceiling, buffer->line_length * WIN_HEIGHT / 2);
-	ft_memset(buffer->addr + buffer->line_length * WIN_HEIGHT / 2,
-		sprites->floor, buffer->line_length * WIN_HEIGHT / 2);*/
-	(void)sprites;
-	ft_memset(buffer->addr, 0, buffer->line_length * WIN_HEIGHT);
+	int pixel_index;
+	int i = 0;
+	int j;
+	while (i < WIN_HEIGHT)
+	{
+		j = 0;
+		while (j < WIN_WIDTH)
+		{
+			pixel_index = i * buffer->line_length + j * (buffer->bits_per_pixel / 8);
+			if (i < WIN_HEIGHT / 2)
+				*(int *) &buffer->addr[pixel_index] = sprites->ceiling;
+			else
+				*(int *) &buffer->addr[pixel_index] = sprites->floor;
+			j++;
+		}
+		i++;
+	}
 }
