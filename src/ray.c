@@ -6,13 +6,13 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:17:16 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 17:58:28 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 18:19:20 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-t_ray	raycast(t_windata *windata, int map[][10], double angle)
+t_ray	raycast(t_windata *windata, double angle)
 {
 	t_v2f	dir = v2ffrom_angle(angle);
     t_v2f	rayStart = windata->player.pos;
@@ -35,7 +35,7 @@ t_ray	raycast(t_windata *windata, int map[][10], double angle)
     } else {
         vRayLength.y = (mapCheck.y + 1 - rayStart.y) * vRayUnitStepSize.y;
     }
-	double	maxRaydist = 10 * 2;
+	double	maxRaydist = windata->smap.tilemap.size.x * windata->smap.tilemap.size.y / 2;
 	double	dist = 0;
 	bool	hitWall = false;
 	enum e_ray_side side = EAST;
@@ -55,9 +55,9 @@ t_ray	raycast(t_windata *windata, int map[][10], double angle)
 			vRayLength.y += vRayUnitStepSize.y;
 			side = (dir.y < 0) ? SOUTH : NORTH;
 		}
-		if (mapCheck.x >= 0 && mapCheck.y >= 0 && mapCheck.x < 10 && mapCheck.y < 10)
+		if (mapCheck.x >= 0 && mapCheck.y >= 0 && mapCheck.x < windata->smap.tilemap.size.x && mapCheck.y < windata->smap.tilemap.size.y)
 		{
-			if (map[mapCheck.y][mapCheck.x])
+			if (windata->smap.tilemap.map[mapCheck.y][mapCheck.x])
 				hitWall = true;
 		}
 	}

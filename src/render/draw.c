@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 15:37:59 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 19:43:04 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:19:18 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos, bool only_if_0)
 
 	dst = windata->win_buffer.addr + (pos.y * windata->win_buffer.line_length
 			+ pos.x * (windata->win_buffer.bits_per_pixel / 8));
+	if (dst < windata->win_buffer.addr || dst >= windata->win_buffer.addr
+		+ windata->win_buffer.line_length * WIN_HEIGHT)
+		return ;
 	if (only_if_0 && *(unsigned int *)dst != 0)
 		return ;
 	*(unsigned int *)dst = color;
@@ -108,12 +111,23 @@ void	clear_window(t_windata *windata)
 	mlx_clear_window(windata->mlx, windata->mlx_win);
 }
 
-void	clear_img_buffer(t_imgbuffer *buffer, t_settings *settings)
+void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites)
 {
-	(void)settings;
-	ft_memset(buffer->addr, 0, buffer->line_length * WIN_HEIGHT);
-	// paint the buffer with the ceiling color
-	//ft_memset(buffer->addr, settings->ceiling_color, buffer->line_length * WIN_HEIGHT / 2);
-	// paint the buffer with the floor color
-	//ft_memset(buffer->addr + (buffer->line_length * WIN_HEIGHT / 2), settings->floor_color, buffer->line_length * WIN_HEIGHT / 2);
+	int pixel_index;
+	int i = 0;
+	int j;
+	while (i < WIN_HEIGHT)
+	{
+		j = 0;
+		while (j < WIN_WIDTH)
+		{
+			pixel_index = i * buffer->line_length + j * (buffer->bits_per_pixel / 8);
+			if (i < WIN_HEIGHT / 2)
+				*(int *) &buffer->addr[pixel_index] = sprites->ceiling;
+			else
+				*(int *) &buffer->addr[pixel_index] = sprites->floor;
+			j++;
+		}
+		i++;
+	}
 }

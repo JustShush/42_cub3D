@@ -6,26 +6,22 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:48:41 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 20:28:35 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:21:43 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-int map[10][10] = {
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-	{1, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 1, 0, 0, 0, 1, 0, 1, 1},
-	{1, 1, 1, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
-
-int loop_hook(t_windata *data) {
+bool	init(t_windata *data)
+{
+	if (!ends_with(data->smap.filename, MAP_EXT))
+		return (pe(INVALID_MAP_EXT), false);
+	if (!map_init(&data->smap))
+		return (free_map(&data->smap, data->mlx), false);
+	return (true);
+}
+int loop_hook(t_windata *data)
+{
     struct timeval now;
     long elapsed;
 
@@ -45,36 +41,35 @@ int	main(int argc, char **argv)
 {
 	t_windata	data;
 
-	(void)argc;
-	(void)argv;
+	if (argc != 2)
+		return (pe(INVALID_ARGS), -1);
 	ft_memset(&data, 0, sizeof(t_windata));
-	data.player = (t_player){(t_v2f){5, 5}, PI / 2, PI / 2, -1};
+	data.smap.tilemap = (t_tilemap){0};
+	data.smap.filename = argv[1]; // ..............................
+	if (!init(&data))
+		exit(EXIT_FAILURE);
+	if (!player_init(&data.player, v2_to_v2f(data.smap.player_pos), data.smap.player_dir))
+		exit(EXIT_FAILURE);
+	//data.player = (t_player){v2_to_v2f(data.smap.player_pos),  PI / 2, PI / 2, -1};// TODO: set rotation depending on the map char dir
+	//printf("Player pos: %d, %d\n", data.player.pos.x, data.player.pos.y);
 	gettimeofday(&data.frame_control.last_update, NULL);  // Get current time
 	data.frame_control.frame_delay = 1000.0 / 60.0;  // For 60 FPS, 1000 ms / 60
 	update_settings(&data);
-	data.settings.ceiling_color = 0x0000DD;
-	data.settings.floor_color = 0x964B00;
 	data.mlx = mlx_init();
 	data.mlx_win = mlx_new_window(data.mlx, WIN_WIDTH, WIN_HEIGHT,
 			PROGRAM_NAME);
-	if (!load_sprites(data.mlx, &data.sprites))
+	if (!load_sprites(data.mlx, &data.smap.sprites))
 		close_win(&data);
 	init_event_handlers(&data);
-	// buffer logic
 	data.win_buffer.img = mlx_new_image(data.mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data.win_buffer.img)
 	{
-		fprintf(stderr, "Failed to allocate memory for image\n");
+		pe("Failed to allocate memory for image\n");
 		exit(EXIT_FAILURE);
 	}
 	data.win_buffer.addr = mlx_get_data_addr(data.win_buffer.img,
 			&data.win_buffer.bits_per_pixel, &data.win_buffer.line_length,
 			&data.win_buffer.endian);
-	if (!data.win_buffer.addr)
-	{
-		fprintf(stderr, "Failed to get image address\n");
-		exit(EXIT_FAILURE);
-	}
 	mlx_loop_hook(data.mlx, loop_hook, &data);
 	mlx_loop(data.mlx);
 	free(data.mlx);
@@ -84,18 +79,19 @@ int	main(int argc, char **argv)
 
 void	drawMapToScreen(t_windata *windata)
 {
-	clear_img_buffer(&windata->win_buffer, &windata->settings);
-	draw_minimap(windata, map);
+	reset_buffer(&windata->win_buffer, &windata->smap.sprites);
 	drawScreen(windata);
+	draw_minimap(windata);
 	mlx_put_image_to_window(windata->mlx, windata->mlx_win,
 		windata->win_buffer.img, 0, 0);
 }
 
-void	draw_vertical_line(t_windata *windata, t_v2 bounds, t_ray ray, int x)
+void draw_vertical_line(t_windata *windata, t_v2 bounds, t_ray ray, int x)
 {
-	char *img_data = windata->win_buffer.addr;
+    char *img_data = windata->win_buffer.addr;
     int bytes_per_pixel = windata->win_buffer.bits_per_pixel / 8;
-	unsigned char *	tex = (unsigned char *) get_sprite_by_side(&windata->sprites, ray.side).addr;
+    t_imgbuffer sprite = get_sprite_by_side(&windata->smap.sprites, ray.side);
+    unsigned char *tex = (unsigned char *)sprite.addr;
 
     if (x < 0) x = 0;
     if (x >= WIN_WIDTH) x = WIN_WIDTH - 1;
@@ -103,15 +99,7 @@ void	draw_vertical_line(t_windata *windata, t_v2 bounds, t_ray ray, int x)
     for (int screen_y = 0; screen_y < WIN_HEIGHT; screen_y++) {
         int pixel_index = screen_y * windata->win_buffer.line_length + x * bytes_per_pixel;
 
-		if (img_data[pixel_index]) {
-			continue;
-		}
-        else if (screen_y < bounds.x) {
-            // Sky
-            for (int i = 0; i < bytes_per_pixel; i++) {
-                img_data[pixel_index + i] = (windata->settings.ceiling_color >> (i * 8)) & 0xFF;
-            }
-        } else if (screen_y >= bounds.x && screen_y < bounds.y) {
+    	if (screen_y >= bounds.x && screen_y < bounds.y) {
             // Wall
             double relY = (screen_y - bounds.x) / (double)(bounds.y - bounds.x);
             int texY = (int)(relY * IMG_SIZE) % IMG_SIZE;
@@ -122,15 +110,8 @@ void	draw_vertical_line(t_windata *windata, t_v2 bounds, t_ray ray, int x)
                 texX = (int)((ray.hit_pos.x - (int)ray.hit_pos.x) * IMG_SIZE) % IMG_SIZE;
             }
 
-            int index = texY * windata->sprites.wall.line_length + (texX * (windata->sprites.wall.bits_per_pixel / 8));
-            for (int i = 0; i < bytes_per_pixel; i++) {
-                img_data[pixel_index + i] = tex[index + i];
-            }
-        } else {
-            // Ground
-            for (int i = 0; i < bytes_per_pixel; i++) {
-                img_data[pixel_index + i] = (windata->settings.floor_color >> (i * 8)) & 0xFF;
-            }
+            int index = texY * sprite.line_length + texX * (sprite.bits_per_pixel / 8);
+            *(int *)&img_data[pixel_index] = *(int *)&tex[index];
         }
     }
 }
@@ -154,7 +135,7 @@ void	drawScreen(t_windata *windata)
 #endif
 	while (angle < windata->player.angle + windata->player.fov / 2)
 	{
-		ray = raycast(windata, map, angle);
+		ray = raycast(windata, angle);
 		tmpangle = windata->player.angle - angle;
 		if (tmpangle < 0)
 			tmpangle += 2 * PI;

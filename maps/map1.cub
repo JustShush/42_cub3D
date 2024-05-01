@@ -1,0 +1,18 @@
+NO ./sprites/rock_wall.xpm
+SO ./sprites/rock_wall.xpm
+WE ./sprites/rock_wall.xpm
+EA ./sprites/rock_wall.xpm
+
+F 0,147,0
+C 0,0,120
+
+1111111111
+1000000001
+1000000001
+1000000111
+1010000101
+10000N0001
+1010001011
+1110000001
+1000000001
+1111111111

@@ -1,5 +1,5 @@
 NAME = cub3d
-CC = cc
+CC = @cc
 CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g #-fsanitize=address -static-libasan
 
 includefolder = includes/
@@ -13,16 +13,20 @@ INCLUDES = -I $(includefolder) -I $(LIBFT_DIR) -I $(MLX_DIR)
 SRC_FOLDER = src/
 OBJ_DIR = obj/
 
-SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c minimap.c settings.c utils.c
+SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c minimap.c settings.c frees.c utils.c
+MAP_FILES = check.c map.c
 RENDER_FILES = draw.c sprite.c
+UTILS_FILES = gen_utils.c map_utils.c map_parser.c
 
 INCLUDE_HEADERS = $(addprefix $(includefolder), \
-	cub3d.h win.h img.h vecs.h \
+	cub3d.h win.h img.h vecs.h map.h \
 )
 
 FILES = \
 	$(SRC_ROOT_FILES) \
-	$(addprefix render/, $(RENDER_FILES))
+	$(addprefix map/, $(MAP_FILES)) \
+	$(addprefix render/, $(RENDER_FILES)) \
+	$(addprefix utils/, $(UTILS_FILES))
 
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:%.c=%.o))
 
@@ -39,12 +43,14 @@ MSG1 = @echo ${IGreen}"Compiled Successfully ✔︎"${Color_Off}
 MSG4 = @echo ${IGreen}"Libft Compiled Successfully ✔︎"${Color_Off}
 MSG2 = @echo ${IYellow}"Cleaned Successfully ✔︎"${Color_Off}
 MSG3 = @echo ${ICyan}"Cleaned ${NAME} Successfully ✔︎"${Color_Off}
+HOWTO = @echo ${IRed}"To run the program do: ./${NAME} maps/map1.cub"${Color_Off}
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(MLX_DIR)$(MLX) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LINK_FLAGS)
 	$(MSG1)
+	$(HOWTO)
 
 $(OBJS): $(OBJ_DIR)%.o: $(SRC_FOLDER)%.c $(INCLUDE_HEADERS)
 	@mkdir -p $(OBJ_DIR) $(dir $@)
@@ -55,10 +61,10 @@ $(LIBFT):
 	$(MSG4)
 
 $(MLX_DIR)$(MLX):
-	cd $(MLX_DIR) && ./configure
+	@cd $(MLX_DIR) && ./configure
 
 run: all
-	@./$(NAME)
+	@./$(NAME) maps/map1.cub
 
 rg: all
 	@valgrind ./$(NAME)

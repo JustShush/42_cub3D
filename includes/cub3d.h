@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/04/22 20:04:24 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:24:10 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <stddef.h>
 # include <sys/time.h>
 
 # include <mlx.h>
@@ -26,6 +27,7 @@
 
 # include <vecs.h>
 # include <img.h>
+# include <map.h>
 
 # define PROGRAM_NAME "Cub3D"
 # define WIN_WIDTH 1280
@@ -37,19 +39,23 @@
 # define RAY_NUM WIN_WIDTH
 # define PLAYER_ZOOM 0.1f
 
-# define MINIMAP_WALL_SIZE 20
-# define MINIMAP_OFFSET MINIMAP_WALL_SIZE
+# define MINIMAP_WALL_SIZE 8
+# define MINIMAP_OFFSET 5
 # define MINIMAP_COLOR_PRIMARY (int) 0xDDDDDD
 # define MINIMAP_COLOR_SECONDARY (int) 0x555555
+# define MINIMAP_PLAYER_COLOR (int) 0x0000FF
 # define MINIMAP_RAY_COLOR (int) 0xDD1111
 
 # define WALL_COLOR (int) 0x00DD00
+
+// ERRORS
+# define MALLOC_ERROR "Malloc failed\n"
+# define INVALID_ARGS "Invalid arguments\nUsage: ./cub3d <map>\n"
 
 //# define PROFILER
 # ifdef PROFILER
 #  include <time.h>
 # endif
-
 
 enum	e_player_direction
 {
@@ -93,8 +99,6 @@ typedef struct t_settings
 {
 	double	projection_plane_distance;
 	double	ray_increment;
-	int		ceiling_color;
-	int		floor_color;
 }	t_settings;
 
 typedef struct s_frame_control {
@@ -107,10 +111,10 @@ typedef struct t_windata
 	void			*mlx;
 	void			*mlx_win;
 	t_imgbuffer		win_buffer;
-	t_sprites		sprites;
 	t_minimap		minimap;
 	t_player		player;
 	t_settings		settings;
+	t_map			smap;
 	t_frame_control frame_control;
 }	t_windata;
 
@@ -128,19 +132,22 @@ void	pixel_to_buffer(t_windata *windata, int color, t_v2 pos, bool only_if_0);
 void    square(t_windata *windata, int color, t_v2 center, int side_length, float angle);
 void	rect(t_windata *windata, int color, t_v2 start, int size);
 void	clear_window(t_windata *windata);
-void	clear_img_buffer(t_imgbuffer *buffer, t_settings *settings);
+void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites);
 
 //  Player
 bool	move_player(t_player *player, enum e_player_direction dir);
 bool	rotate_player(t_player *player, enum e_player_direction dir);
 bool	player_zoom(t_player *player, double zoom);
+bool	player_set_direction(t_player *player, char player_dir);
+bool	player_init(t_player *player, t_v2f pos, char player_dir);
 
 //  Raycasting
-t_ray	raycast(t_windata *windata, int map[][10], double angle);
+t_ray	raycast(t_windata *windata, double angle);
 
 //  Minimap
-void	draw_minimap(t_windata *windata, int map[][10]);
+void	draw_minimap(t_windata *windata);
 void	draw_minimap_ray(t_windata *windata, t_v2f rayInter);
+void	draw_minimap_rays(t_windata *windata);
 
 //  Settings
 void	update_settings(t_windata	*windata);
@@ -149,5 +156,22 @@ void	update_settings(t_windata	*windata);
 int		darken_color(int hexColor, double blendFactor);
 double	map_number(double x, t_v2f in, t_v2f out);
 t_imgbuffer	get_sprite_by_side(t_sprites *sprites, enum e_ray_side side);
+
+
+// in map_utils.c
+bool	ends_with(char *s1, char *s2);
+
+// gen_utils.c
+int		first_str(char *s1, char *s2);
+bool	char_in_set(char c, char *set);
+bool	only_digits(char *str);
+void	pe(char *msg);
+void	pe_msg(char *err, char *msg);
+
+int		empty_line(char *line);
+
+// frees
+void	free_array(char **arr);
+void	free_map(t_map *map, void *mlx);
 
 #endif
