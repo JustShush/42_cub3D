@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:44:39 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:46:17 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,12 @@
 # define ROTATION_SPEED 0.11f
 # define MOVEMENT_SPEED 0.15f
 # define RAY_NUM WIN_WIDTH
-# define PLAYER_ZOOM 0.1f
 
 # define MINIMAP_WALL_SIZE 8
 # define MINIMAP_OFFSET 5
 # define MINIMAP_COLOR_PRIMARY (int) 0xDDDDDD
 # define MINIMAP_COLOR_SECONDARY (int) 0x555555
-# define MINIMAP_PLAYER_COLOR (int) 0x0000FF
 # define MINIMAP_RAY_COLOR (int) 0xDD1111
-
-# define WALL_COLOR (int) 0x00DD00
 
 // ERRORS
 # define MALLOC_ERROR "Malloc failed\n"
@@ -132,7 +128,6 @@ void	reset_buffer(t_imgbuffer *buffer, t_sprites *sprites);
 //  Player
 bool	move_player(t_player *player, t_tilemap *tilemap, enum e_player_direction dir);
 bool	rotate_player(t_player *player, enum e_player_direction dir);
-bool	player_zoom(t_player *player, double zoom);
 bool	player_set_direction(t_player *player, char player_dir);
 bool	player_init(t_player *player, t_v2f pos, char player_dir);
 

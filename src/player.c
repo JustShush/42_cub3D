@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 18:15:03 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:34:21 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:46:11 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,6 @@ bool	rotate_player(t_player *player, enum e_player_direction dir)
 		player->angle -= 2 * PI;
 	while (player->angle < -2 * PI)
 		player->angle += 2 * PI;
-	return (true);
-}
-
-bool	player_zoom(t_player *player, double zoom)
-{
-	player->fov += zoom;
 	return (true);
 }
 
