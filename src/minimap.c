@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:54:21 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:23:50 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:58:07 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	draw_minimap_ray(t_windata *windata, t_v2f rayInter)
 		MINIMAP_OFFSET + windata->player.pos.y * MINIMAP_WALL_SIZE};
 	end = (t_v2){MINIMAP_OFFSET + rayInter.x * MINIMAP_WALL_SIZE,
 		MINIMAP_OFFSET + rayInter.y * MINIMAP_WALL_SIZE};
-	line(windata, MINIMAP_RAY_COLOR, start, end, true);
+	line(windata, MINIMAP_RAY_COLOR, start, end);
 }
 
 void	draw_minimap_rays(t_windata *windata)

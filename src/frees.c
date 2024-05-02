@@ -36,7 +36,7 @@ void	free_map(t_map *map, void *mlx)
 	{
 		i = 0;
 		while (map->tilemap.map && i < map->tilemap.size.y
-				&& map->tilemap.map[i] != NULL)
+			&& map->tilemap.map[i] != NULL)
 		{
 			free(map->tilemap.map[i]);
 			i++;

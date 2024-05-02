@@ -13,10 +13,10 @@ INCLUDES = -I $(includefolder) -I $(LIBFT_DIR) -I $(MLX_DIR)
 SRC_FOLDER = src/
 OBJ_DIR = obj/
 
-SRC_ROOT_FILES = main.c eventHandlers.c vecs.c player.c ray.c minimap.c settings.c frees.c utils.c
-MAP_FILES = check.c map.c
-RENDER_FILES = draw.c sprite.c
-UTILS_FILES = gen_utils.c map_utils.c map_parser.c
+SRC_ROOT_FILES = main.c eventHandlers.c player.c ray.c minimap.c settings.c frees.c utils.c utils2.c
+MAP_FILES = check.c map.c parser.c identifiers.c
+RENDER_FILES = draw.c sprite.c sprite_utils.c screen.c
+VECS_FILES = v2.c v2f.c
 
 INCLUDE_HEADERS = $(addprefix $(includefolder), \
 	cub3d.h win.h img.h vecs.h map.h \
@@ -26,7 +26,8 @@ FILES = \
 	$(SRC_ROOT_FILES) \
 	$(addprefix map/, $(MAP_FILES)) \
 	$(addprefix render/, $(RENDER_FILES)) \
-	$(addprefix utils/, $(UTILS_FILES))
+	$(addprefix utils/, $(UTILS_FILES)) \
+	$(addprefix vecs/, $(VECS_FILES))
 
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:%.c=%.o))
 

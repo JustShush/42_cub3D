@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_utils.h                                        :+:      :+:    :+:   */
+/*   identifiers.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dimarque <dimarque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,20 +11,6 @@
 /* ************************************************************************** */
 
 #include <cub3d.h>
-
-int	empty_line(char *line)
-{
-	int	i;
-
-	i = 0;
-	while (line[i])
-	{
-		if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 enum e_type_identifier	line_matches_identifier(char *line)
 {
@@ -60,11 +46,28 @@ bool	parse_identifier(t_map *map, char *line,
 	else if (identifier == FLOOR_COLOR || identifier == CEILING_COLOR)
 	{
 		if (identifier == FLOOR_COLOR && map->sprites.floor != -1)
-			return (pe_msg(DUPLICATE_IDENTIFIER, line), free_array(split), false);
+			return (pe(DUPLICATE_IDENTIFIER), free_array(split), false);
 		if (!parse_color(map, split[1], identifier))
 			return (free_array(split), false);
 	}
 	return (free_array(split), true);
+}
+
+bool	handle_tilemap_char(t_map *map, int i, int j)
+{
+	if (map->file[i][j] == ' ')
+		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = -1;
+	else if (char_in_set(map->file[i][j], PLAYER_DIRS))
+	{
+		if (char_in_set(map->player_dir, PLAYER_DIRS))
+			return (pe(MULTIPLE_PLAYERS), false);
+		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = 0;
+		map->player_dir = map->file[i][j];
+		map->player_pos = (t_v2){j, i - TILEMAP_FIRST_INDEX};
+	}
+	else
+		map->tilemap.map[i - TILEMAP_FIRST_INDEX][j] = map->file[i][j] - '0';
+	return (true);
 }
 
 unsigned int	create_color(int r, int g, int b)
@@ -73,49 +76,4 @@ unsigned int	create_color(int r, int g, int b)
 	g = g & 0xFF;
 	b = b & 0xFF;
 	return ((r << 16) | (g << 8) | b);
-}
-
-bool	ends_with(char *s1, char *s2)
-{
-	int	i;
-	int	j;
-
-	i = ft_strlen(s1) - 1;
-	j = ft_strlen(s2) - 1;
-	while (j >= 0)
-	{
-		if (s1[i] != s2[j])
-			return (false);
-		i--;
-		j--;
-	}
-	return (true);
-}
-
-char *sanitize_file_line(char *line)
-{
-	char	*trimmed;
-	int		i;
-	int		j;
-
-	if (!line)
-		return (NULL);
-	trimmed = malloc(sizeof(char) * (ft_strlen(line) + 1));
-	if (!trimmed)
-		return (pe(MALLOC_ERROR), NULL);
-	ft_memset(trimmed, 0, sizeof(char) * (ft_strlen(line) + 1));
-	i = 0;
-	j = 0;
-	while (line && line[i])
-	{
-		if (line[i] == '\t')
-			trimmed[j] = ' ';
-		else if (line[i] == '\n')
-			trimmed[j] = '\0';
-		else
-			trimmed[j] = line[i];
-		j++;
-		i++;
-	}
-	return (trimmed);
 }

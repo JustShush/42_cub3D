@@ -6,63 +6,90 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:17:16 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 18:19:20 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 13:16:21 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
+typedef struct t_rayhelper
+{
+	t_v2f			dir;
+	t_v2f			raystart;
+	t_v2f			vrayunitstepsize;
+	t_v2			mapcheck;
+	t_v2f			vraylength;
+	t_v2			vstep;
+	double			maxraydist;
+	double			dist;
+	bool			hitwall;
+	enum e_ray_side	side;
+}	t_rayhelper;
+
+static void	init_rayhelper(t_rayhelper *rhelper, t_v2f raystart, double angle)
+{
+	rhelper->dir = v2ffrom_angle(angle);
+	rhelper->raystart = raystart;
+	rhelper->vrayunitstepsize.x = sqrt(1 + (rhelper->dir.y / rhelper->dir.x)
+			*(rhelper->dir.y / rhelper->dir.x));
+	rhelper->vrayunitstepsize.y = sqrt(1 + (rhelper->dir.x / rhelper->dir.y)
+			*(rhelper->dir.x / rhelper->dir.y));
+	rhelper->mapcheck = (t_v2){raystart.x, raystart.y};
+	rhelper->vraylength.x = this_or_thatf(rhelper->dir.x < 0,
+			(raystart.x - rhelper->mapcheck.x) * rhelper->vrayunitstepsize.x,
+			(rhelper->mapcheck.x + 1 - raystart.x)
+			* rhelper->vrayunitstepsize.x);
+	rhelper->vraylength.y = this_or_thatf(rhelper->dir.y < 0,
+			(raystart.y - rhelper->mapcheck.y) * rhelper->vrayunitstepsize.y,
+			(rhelper->mapcheck.y + 1 - raystart.y)
+			* rhelper->vrayunitstepsize.y);
+	rhelper->vstep.x = this_or_that(rhelper->dir.x < 0, -1, 1);
+	rhelper->vstep.y = this_or_that(rhelper->dir.y < 0, -1, 1);
+	rhelper->dist = 0;
+	rhelper->hitwall = false;
+	rhelper->side = EAST;
+}
+
+static void	raycalcs(t_rayhelper *rhelper)
+{
+	if (rhelper->vraylength.x < rhelper->vraylength.y)
+	{
+		rhelper->mapcheck.x += rhelper->vstep.x;
+		rhelper->dist = rhelper->vraylength.x;
+		rhelper->vraylength.x += rhelper->vrayunitstepsize.x;
+		rhelper->side = this_or_that(rhelper->dir.x < 0, WEST, EAST);
+	}
+	else
+	{
+		rhelper->mapcheck.y += rhelper->vstep.y;
+		rhelper->dist = rhelper->vraylength.y;
+		rhelper->vraylength.y += rhelper->vrayunitstepsize.y;
+		rhelper->side = this_or_that(rhelper->dir.y < 0, SOUTH, NORTH);
+	}
+}
+
 t_ray	raycast(t_windata *windata, double angle)
 {
-	t_v2f	dir = v2ffrom_angle(angle);
-    t_v2f	rayStart = windata->player.pos;
-    t_v2f	vRayUnitStepSize = {
-	sqrt(1 + (dir.y / dir.x) * (dir.y / dir.x)), 
-	   sqrt(1 + (dir.x / dir.y) * (dir.x / dir.y)) 
-    };
-    t_v2	mapCheck = {rayStart.x, rayStart.y};
-    t_v2f	vRayLength = {0, 0};
-    t_v2	vStep = {dir.x < 0 ? -1 : 1, dir.y < 0 ? -1 : 1};
+	t_rayhelper		rhelper;
 
-    // Calculate initial ray lengths
-    if (dir.x < 0) {
-        vRayLength.x = (rayStart.x - mapCheck.x) * vRayUnitStepSize.x;
-    } else {
-        vRayLength.x = (mapCheck.x + 1 - rayStart.x) * vRayUnitStepSize.x;
-    }
-    if (dir.y < 0) {
-        vRayLength.y = (rayStart.y - mapCheck.y) * vRayUnitStepSize.y;
-    } else {
-        vRayLength.y = (mapCheck.y + 1 - rayStart.y) * vRayUnitStepSize.y;
-    }
-	double	maxRaydist = windata->smap.tilemap.size.x * windata->smap.tilemap.size.y / 2;
-	double	dist = 0;
-	bool	hitWall = false;
-	enum e_ray_side side = EAST;
-	while (!hitWall && dist < maxRaydist)
+	init_rayhelper(&rhelper, windata->player.pos, angle);
+	rhelper.maxraydist = windata->smap.tilemap.size.x
+		* windata->smap.tilemap.size.y / 2;
+	while (!rhelper.hitwall && rhelper.dist < rhelper.maxraydist)
 	{
-		if (vRayLength.x < vRayLength.y)
+		raycalcs(&rhelper);
+		if (rhelper.mapcheck.x >= 0 && rhelper.mapcheck.y >= 0
+			&& rhelper.mapcheck.x < windata->smap.tilemap.size.x
+			&& rhelper.mapcheck.y < windata->smap.tilemap.size.y)
 		{
-			mapCheck.x += vStep.x;
-			dist = vRayLength.x;
-			vRayLength.x += vRayUnitStepSize.x;
-			side = (dir.x < 0) ? WEST : EAST;
-		}
-		else
-		{
-			mapCheck.y += vStep.y;
-			dist = vRayLength.y;
-			vRayLength.y += vRayUnitStepSize.y;
-			side = (dir.y < 0) ? SOUTH : NORTH;
-		}
-		if (mapCheck.x >= 0 && mapCheck.y >= 0 && mapCheck.x < windata->smap.tilemap.size.x && mapCheck.y < windata->smap.tilemap.size.y)
-		{
-			if (windata->smap.tilemap.map[mapCheck.y][mapCheck.x])
-				hitWall = true;
+			if (windata->smap.tilemap.map
+				[rhelper.mapcheck.y][rhelper.mapcheck.x])
+				rhelper.hitwall = true;
 		}
 	}
-
-	t_v2f	rayIntersection = (t_v2f){rayStart.x + dir.x * dist, rayStart.y + dir.y * dist};
-	//printf("Ray intersection: %f, %f\n", rayIntersection.x, rayIntersection.y);
-	return ((t_ray){rayIntersection, dist, side});
+	return ((t_ray){(t_v2f){
+		rhelper.raystart.x + rhelper.dir.x * rhelper.dist,
+		rhelper.raystart.y + rhelper.dir.y * rhelper.dist},
+		rhelper.dist, rhelper.side
+	});
 }
