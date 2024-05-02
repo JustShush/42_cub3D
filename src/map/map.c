@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 15:14:37 by dimarque          #+#    #+#             */
-/*   Updated: 2024/05/02 13:29:00 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:52:01 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool	readmap(t_map *map)
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (empty_line(line))
+		if (i < (TILEMAP_FIRST_INDEX + 1) && empty_line(line))
 		{
 			free(line);
 			line = get_next_line(fd);
@@ -85,7 +85,7 @@ bool	calc_map_size(t_map *map)
 		str = get_next_line(fd);
 		if (str == NULL)
 			break ;
-		if (empty_line(str))
+		if (map->size.y < TILEMAP_FIRST_INDEX && empty_line(str))
 		{
 			free(str);
 			str = NULL;
@@ -103,12 +103,19 @@ bool	calc_map_size(t_map *map)
 bool	calculate_tilemap_size(t_map *map)
 {
 	int		i;
+	int		empty_line_c;
 
 	i = TILEMAP_FIRST_INDEX;
-	while (i < map->size.y)
+	empty_line_c = 0;
+	while (i < map->size.y && map->file[i])
 	{
 		if (empty_line(map->file[i]))
-			return (pe(MAP_HAS_EMPTY_LINE), false);
+			empty_line_c++;
+		else
+		{
+			if (empty_line_c > 0)
+				return (pe(MAP_HAS_EMPTY_LINE), false);
+		}
 		map->tilemap.size.y++;
 		if (ft_strlen(map->file[i]) > (size_t) map->tilemap.size.x)
 			map->tilemap.size.x = ft_strlen(map->file[i]);
