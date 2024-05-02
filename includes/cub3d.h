@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 21:42:12 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 13:08:57 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ bool				ends_with(char *s1, char *s2);
 // Utils2.c
 
 int					this_or_that(bool condition, int this, int that);
+float				this_or_thatf(bool condition, float this, float that);
 
 // frees
 void				free_array(char **arr);
