@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 15:14:37 by dimarque          #+#    #+#             */
-/*   Updated: 2024/05/01 20:10:51 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 13:29:00 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@ bool	map_init(t_map	*map)
 	return (true);
 }
 
+// Because readmap was too big
+static bool	readmap_line(t_map *map, int i, char *line)
+{
+	if (i <= (TILEMAP_FIRST_INDEX - 1))
+		map->file[i] = ft_strtrim(line, " \n\t");
+	else
+		map->file[i] = ft_strtrim(line, "\n\t");
+	free(line);
+	if (!map->file[i])
+		return (pe(MALLOC_ERROR), false);
+	return (true);
+}
+
 bool	readmap(t_map *map)
 {
 	int		fd;
@@ -48,13 +61,8 @@ bool	readmap(t_map *map)
 			line = get_next_line(fd);
 			continue ;
 		}
-		if (i <= (TILEMAP_FIRST_INDEX - 1))
-			map->file[i] = ft_strtrim(line, " \n\t");
-		else
-			map->file[i] = ft_strtrim(line, "\n\t");
-		free(line);
-		if (!map->file[i])
-			return (pe(MALLOC_ERROR), false);
+		if (!readmap_line(map, i, line))
+			return (false);
 		i++;
 		line = get_next_line(fd);
 	}

@@ -6,32 +6,36 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 18:15:03 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 19:46:11 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 13:21:02 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cub3d.h>
 
-bool	move_player(t_player *player, t_tilemap *tilemap, enum e_player_direction dir)
+bool	move_player(t_player *player, t_tilemap *tilemap,
+			enum e_player_direction dir)
 {
 	t_v2f	new_pos;
 	t_v2f	vdir;
-
 
 	if (dir == DOWN)
 		vdir = v2fmul_scalar(v2ffrom_angle(player->angle), -MOVEMENT_SPEED);
 	else if (dir == UP)
 		vdir = v2fmul_scalar(v2ffrom_angle(player->angle), +MOVEMENT_SPEED);
 	else if (dir == LEFT)
-		vdir = v2fmul_scalar(v2ffrom_angle(player->angle - PI / 2), MOVEMENT_SPEED);
+		vdir = v2fmul_scalar(v2ffrom_angle(player->angle - PI / 2),
+				MOVEMENT_SPEED);
 	else if (dir == RIGHT)
-		vdir = v2fmul_scalar(v2ffrom_angle(player->angle + PI / 2), MOVEMENT_SPEED);
+		vdir = v2fmul_scalar(v2ffrom_angle(player->angle + PI / 2),
+				MOVEMENT_SPEED);
 	else
 		return (false);
 	new_pos = v2fadd(player->pos, vdir);
-	if (new_pos.x < 0 || new_pos.y < 0 || new_pos.x >= tilemap->size.x || new_pos.y >= tilemap->size.y)
+	if (new_pos.x < 0 || new_pos.y < 0 || new_pos.x >= tilemap->size.x
+		|| new_pos.y >= tilemap->size.y)
 		return (false);
-	if (tilemap->map[(int)new_pos.y][(int)new_pos.x] == 1 || tilemap->map[(int)new_pos.y][(int)new_pos.x] == -1)
+	if (tilemap->map[(int)new_pos.y][(int)new_pos.x] == 1
+			|| tilemap->map[(int)new_pos.y][(int)new_pos.x] == -1)
 		return (false);
 	player->pos = new_pos;
 	return (true);
@@ -67,7 +71,7 @@ bool	player_set_direction(t_player *player, char player_dir)
 	if (!char_in_set(player_dir, PLAYER_DIRS))
 		return (false);
 	if (player_dir == 'N')
-		player->angle = - PI / 2;
+		player->angle = -PI / 2;
 	else if (player_dir == 'E')
 		player->angle = 0;
 	else if (player_dir == 'S')

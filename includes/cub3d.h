@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:47:40 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/02 13:08:57 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:07:43 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 # define ROTATION_SPEED 0.11f
 # define MOVEMENT_SPEED 0.15f
 # define RAY_NUM WIN_WIDTH
+# define FPS 60.0
 
 # define MINIMAP_WALL_SIZE 8
 # define MINIMAP_OFFSET 5
@@ -108,12 +109,6 @@ typedef struct t_windata
 	t_frame_control	frame_control;
 }					t_windata;
 
-void				drawMapToScreen(t_windata *windata);
-void				drawScreen(t_windata *windata);
-
-void				init_event_handlers(t_windata *windata);
-void				close_win(t_windata *windata);
-
 //  Render
 // 		\	draw.c
 void				line(t_windata *windata, int color, t_v2 start, t_v2 end);
@@ -124,6 +119,11 @@ void				reset_buffer(t_imgbuffer *buffer, t_sprites *sprites);
 // 		\	sprites_utils.c
 t_imgbuffer			get_sprite_by_side(t_sprites *sprites,
 						enum e_ray_side side);
+
+//      \   screen.c
+void				drawscreen(t_windata *windata);
+void				draw_vertical_line(t_windata *windata, t_v2 bounds,
+						t_ray ray, int x);
 
 //  Player
 bool				move_player(t_player *player, t_tilemap *tilemap,
@@ -155,9 +155,14 @@ bool				ends_with(char *s1, char *s2);
 
 int					this_or_that(bool condition, int this, int that);
 float				this_or_thatf(bool condition, float this, float that);
+float				normalize_radian(float angle);
 
 // frees
 void				free_array(char **arr);
 void				free_map(t_map *map, void *mlx);
+
+// EventHandlers
+void				init_event_handlers(t_windata *windata);
+void				close_win(t_windata *windata);
 
 #endif

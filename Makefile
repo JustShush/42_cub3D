@@ -15,7 +15,7 @@ OBJ_DIR = obj/
 
 SRC_ROOT_FILES = main.c eventHandlers.c player.c ray.c minimap.c settings.c frees.c utils.c utils2.c
 MAP_FILES = check.c map.c parser.c identifiers.c
-RENDER_FILES = draw.c sprite.c sprite_utils.c
+RENDER_FILES = draw.c sprite.c sprite_utils.c screen.c
 VECS_FILES = v2.c v2f.c
 
 INCLUDE_HEADERS = $(addprefix $(includefolder), \
