@@ -6,7 +6,7 @@
 /*   By: tiagoliv <tiagoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 16:58:19 by tiagoliv          #+#    #+#             */
-/*   Updated: 2024/05/01 20:16:20 by tiagoliv         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:35:29 by tiagoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ bool	parse_color(t_map *map, char *color, enum e_type_identifier identifier)
 	int		i;
 
 	colors = ft_split(color, ',');
-	if (!colors || !colors[1] || !colors[2] || colors[3])
+	if (!colors || !colors[0] || !colors[1] || !colors[2] || colors[3])
 		return (free_array(colors), pe(INVALID_COLOR), false);
 	i = 0;
 	while (colors[i])
