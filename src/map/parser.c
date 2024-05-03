@@ -103,6 +103,8 @@ bool	parse_wall_texture(t_map *map, char *filename,
 		sprite = &map->sprites.west;
 	else if (identifier == EAST_TEXTURE)
 		sprite = &map->sprites.east;
+	else
+		sprite = NULL;
 	if (sprite->filename)
 		return (pe(DUPLICATE_IDENTIFIER), false);
 	sprite->filename = ft_strdup(filename);
