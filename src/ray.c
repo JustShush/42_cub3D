@@ -64,7 +64,7 @@ static void	raycalcs(t_rayhelper *rhelper)
 		rhelper->mapcheck.y += rhelper->vstep.y;
 		rhelper->dist = rhelper->vraylength.y;
 		rhelper->vraylength.y += rhelper->vrayunitstepsize.y;
-		rhelper->side = this_or_that(rhelper->dir.y < 0, SOUTH, NORTH);
+		rhelper->side = this_or_that(rhelper->dir.y < 0, NORTH, SOUTH);
 	}
 }
 

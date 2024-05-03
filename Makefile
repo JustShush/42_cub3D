@@ -1,4 +1,4 @@
-NAME = cub3d
+NAME = cub3D
 CC = @cc
 CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g #-fsanitize=address -static-libasan
 
